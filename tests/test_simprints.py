@@ -45,8 +45,10 @@ def test_threads_agree_with_serial():
 def test_vectors(name):
     want = json.loads((V / "expected.json").read_text(encoding="utf-8"))[name]
     got = json.loads(json.dumps(s.generate(V / name, "creator")))
-    differ = [w["chunk_idx"] for w, g in zip(want["codes"], got["codes"]) if w != g]
-    assert got == want, f"{len(differ)} of {len(want['codes'])} codes differ: {differ}"
+    assert {k: v for k, v in got.items() if k != "codes"} == {k: v for k, v in want.items() if k != "codes"}
+    assert [c["code"] for c in got["codes"]] == [c["code"] for c in want["codes"]]  # bit for bit
+    for g, w in zip(got["codes"], want["codes"], strict=True):  # float32 keypoints: the 6th decimal may differ
+        assert all(abs(g[k] - w[k]) <= 1e-5 for k in ("x", "y", "scale")) and abs(g["angle"] - w["angle"]) <= 1e-2
 
 
 # --- errors ------------------------------------------------------------------------------

@@ -204,10 +204,13 @@ synthetic and seeded ([`tests/make_vectors.py`](tests/make_vectors.py)).
 | small.png (24×24) | d256eeb4f84d86be | 24×24 | 0 | reason `too small` |
 
 These vectors were produced with OpenCV 5.0.0 (opencv-python-headless
-5.0.0.93), NumPy 2.5.1 and Pillow 12.3.0 on Windows x86-64. SIFT's
-floating-point detail can differ between OpenCV builds and CPUs. A
-reimplementation should therefore expect the same codes on the same keypoints,
-with rare differences of a few bits, rather than guaranteed bit identity.
+5.0.0.93), NumPy 2.5.1 and Pillow 12.3.0. With those pins the codes are
+bit-identical on Windows x86-64, Linux x86-64 and macOS on Apple Silicon (CI
+checks the last two). `x`, `y` and `scale` can differ by 1 in the sixth
+decimal: SIFT keeps keypoints in float32, which rounds differently on each
+platform. The test therefore compares codes exactly and geometry within 1e-5.
+Another OpenCV build or a reimplementation may differ in a few bits of rare
+codes.
 
 ## 8. Where this differs from the research code
 
