@@ -181,7 +181,7 @@ def work_original(job) -> dict:
     imgs["original"] = Path(path).read_bytes()
     verifiers = {v for _, v, _ in pairs} | {"original"}
     codes = {name: codes_for(data, name in verifiers, vset) for name, data in imgs.items()}
-    return {"name": Path(path).name, "codes": codes, "pairs": pairs}
+    return {"name": f"{path.parent.name}/{path.name}", "codes": codes, "pairs": pairs}
 
 
 def work_modified(job) -> dict:
@@ -190,7 +190,7 @@ def work_modified(job) -> dict:
     for m in modified:
         codes[m.name] = codes_for(m, True, vset)
         pairs.append((m.stem.split("__", 1)[1], m.name, "original"))
-    return {"name": Path(path).name, "codes": codes, "pairs": pairs}
+    return {"name": f"{path.parent.name}/{path.name}", "codes": codes, "pairs": pairs}
 
 
 def work_plain(job) -> dict:
@@ -363,6 +363,53 @@ def markdown(rep: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+# --- fetch-corpus --------------------------------------------------------------------------
+
+USER_AGENT = "image-simprints/0.1 (https://github.com/jmsherrier/image-simprints)"
+
+
+def fetch_corpus(manifest: Path, to: Path) -> int:
+    """Download every manifest row not already in `to` with the right SHA-256, one
+    request a second (Wikimedia's limit), and verify it. Returns the failures."""
+    import csv
+    import hashlib
+    import urllib.error
+    import urllib.request
+
+    rows = list(csv.DictReader(manifest.open(encoding="utf-8")))
+    failed = []
+    for n, r in enumerate(rows, 1):
+        out = to / r["path"]
+        if out.exists() and hashlib.sha256(out.read_bytes()).hexdigest() == r["sha256"]:
+            continue
+        data = None
+        for attempt in range(5):
+            try:
+                req = urllib.request.Request(r["file_url"], headers={"User-Agent": USER_AGENT})
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    data = resp.read()
+                break
+            except urllib.error.HTTPError as e:
+                if e.code not in (429, 500, 502, 503, 504):
+                    break
+                time.sleep(10 * (attempt + 1))
+            except OSError:
+                time.sleep(10 * (attempt + 1))
+        time.sleep(1)
+        if data is None or hashlib.sha256(data).hexdigest() != r["sha256"]:
+            failed.append(r["path"])
+            print(f"{'hash differs' if data else 'download failed'}: {r['path']} ({r['file_url']})", flush=True)
+            continue
+        out.parent.mkdir(parents=True, exist_ok=True)
+        tmp = out.with_suffix(".part")
+        tmp.write_bytes(data)
+        tmp.replace(out)
+        if n % 100 == 0:
+            print(f"{n} of {len(rows)}", flush=True)
+    print(f"{len(rows) - len(failed)} of {len(rows)} files present and verified in {to}")
+    return len(failed)
+
+
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(prog="image-simprints")
     sub = ap.add_subparsers(dest="command", required=True)
@@ -375,7 +422,13 @@ def main(argv=None) -> None:
     t.add_argument("--out", type=Path, default=Path("report"), help="where report.json and summary.md go")
     t.add_argument("--workers", type=int, default=os.cpu_count())
     t.add_argument("--limit", type=int, help="use only the first N originals")
-    run(ap.parse_args(argv))
+    f = sub.add_parser("fetch-corpus", help="download the test corpus listed in a manifest and verify its hashes")
+    f.add_argument("--manifest", type=Path, default=Path("tests/corpus/manifest.csv"))
+    f.add_argument("--to", type=Path, default=Path(".cache/corpus"), help="where the images go")
+    args = ap.parse_args(argv)
+    if args.command == "fetch-corpus":
+        raise SystemExit(1 if fetch_corpus(args.manifest, args.to) else 0)
+    run(args)
 
 
 if __name__ == "__main__":
