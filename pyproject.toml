@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image-simprints"
+version = "0.1.0"
+description = "Granular image codes: find an image inside another, or another inside it"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Joseph Sherrier", email = "jmsherrier@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy==2.5.1",
+    "opencv-python-headless==5.0.0.93",
+    "pillow==12.3.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest==8.4.2"]
+
+[project.scripts]
+image-simprints = "image_simprints.testmode:main"
+
+[tool.setuptools.package-data]
+image_simprints = ["projection.f32"]
