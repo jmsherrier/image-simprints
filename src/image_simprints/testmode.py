@@ -332,7 +332,7 @@ def markdown(rep: dict) -> str:
               "| manipulation | expected | found | label correct | pairs |", "| --- | --- | --- | --- | --- |"]  # fmt: skip
     for k, v in default["per_manipulation"].items():
         lines.append(f"| {k} | {v['expected'] or '-'} | {v['found']:.0%} | {v['label_correct']:.0%} | {v['pairs']} |")
-    lines += ["", "## Time per image (generate, one process)", ""]
+    lines += ["", f"## Time per image (generate, {inp['workers']} worker processes in parallel)", ""]
     lines += [f"- {k}: mean {v['mean']} ms, median {v['median']} ms, p95 {v['p95']} ms ({v['images']} images)"
               for k, v in rep["timing_ms"].items() if v]  # fmt: skip
     if default["false_match_pairs"]:

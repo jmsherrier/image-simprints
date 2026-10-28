@@ -93,8 +93,8 @@ def decode(source) -> np.ndarray:
 
 
 def _to_srgb(im: Image.Image) -> np.ndarray:
-    im = ImageOps.exif_transpose(im)
     icc = im.info.get("icc_profile")
+    im = ImageOps.exif_transpose(im)
     if im.mode in ("I;16", "I;16L", "I;16B", "I;16N", "I"):  # 16-bit grey: keep the high byte
         im = Image.fromarray((np.clip(np.asarray(im), 0, 65535).astype(np.uint32) >> 8).astype(np.uint8))
     alpha = None
