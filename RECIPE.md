@@ -170,8 +170,10 @@ terms, the verifier is the query and the candidate is the reference.
    - With more, use OpenCV `estimateAffinePartial2D(candidate XY, verifier XY,
      LMEDS)`. If that fails, use the first pair. If the result is not finite (all
      pairs at one point), also use the first pair.
-7. **Footprint**: map the candidate rectangle into the verifier and intersect it
-   with the verifier rectangle (OpenCV `intersectConvexConvex`), giving an area.
+7. **Footprint**: map the candidate rectangle into the verifier, in float64.
+   Clip it to the verifier rectangle `[0, w] × [0, h]` (Sutherland–Hodgman
+   against the four sides, a point on a side counting as inside) and take the
+   area of what is left (shoelace formula).
    Then `share_candidate = min(1, area / |det| / area_candidate)` and
    `share_verifier = min(1, area / area_verifier)`, where `det` is the
    determinant of the transform's 2×2 part.
@@ -228,3 +230,11 @@ codes.
   `geometry`, `codematch.classify`) for one pair, with its footprint check
   reduced to the span check that was chosen (`spread ≥ 0.05`; the other
   cut-offs were off).
+- **Footprint**: the research intersected the two outlines with OpenCV's
+  `intersectConvexConvex`. That function returns 0, or a partial area, when the
+  outlines nearly coincide, which is exactly the identical-image case (an
+  identity transform with residues around 1e-6). On the 150 test originals,
+  28 plain re-encodes were therefore called `none` or `overlapping`. This
+  package clips the polygon itself (§6.7). Only 4 such failures remain, and all
+  4 are images with 0 or 1 codes. The research's numbers were probably
+  affected in the same way.

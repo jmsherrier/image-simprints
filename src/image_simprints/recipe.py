@@ -311,16 +311,34 @@ def estimate(gq, gr) -> np.ndarray:
     return np.vstack([m, [0, 0, 1]])
 
 
+def clipped_area(poly: np.ndarray, w: float, h: float) -> float:
+    """Area of a convex polygon inside [0, w] x [0, h]: Sutherland-Hodgman clipping,
+    then the shoelace formula. (OpenCV's intersectConvexConvex returns 0 when the
+    two outlines nearly coincide, as they do for an identical image.)"""
+    pts = [np.asarray(p, np.float64) for p in poly]
+    for axis, bound, sign in ((0, 0.0, 1), (0, w, -1), (1, 0.0, 1), (1, h, -1)):
+        inside = [sign * (p[axis] - bound) >= 0 for p in pts]
+        out = []
+        for i, q in enumerate(pts):
+            p, p_in = pts[i - 1], inside[i - 1]
+            if inside[i] != p_in:  # the edge p -> q crosses the boundary
+                out.append(p + (bound - p[axis]) / (q[axis] - p[axis]) * (q - p))
+            if inside[i]:
+                out.append(q)
+        pts = out
+        if not pts:
+            return 0.0
+    x, y = np.array(pts).T
+    return float(abs(x @ np.roll(y, -1) - y @ np.roll(x, -1)) / 2)
+
+
 def footprint(t: np.ndarray, size_r, size_q) -> tuple[float, float]:
     """(share of the candidate covered by the verifier, share of the verifier
     covered by the candidate) under the candidate -> verifier transform."""
 
-    def rect(size):
-        w, h = size
-        return np.array([[0, 0], [w, 0], [w, h], [0, h]], dtype=np.float32)
-
-    pts = np.hstack([rect(size_r), np.ones((4, 1), np.float32)]) @ t.T
-    area, _ = cv2.intersectConvexConvex(pts[:, :2].astype(np.float32), rect(size_q))
+    w, h = size_r
+    poly = (np.array([[0, 0, 1], [w, 0, 1], [w, h, 1], [0, h, 1]], np.float64) @ t.T)[:, :2]
+    area = clipped_area(poly, *size_q)
     det = abs(np.linalg.det(t[:2, :2]))
     if area <= 0 or det <= 0:
         return 0.0, 0.0

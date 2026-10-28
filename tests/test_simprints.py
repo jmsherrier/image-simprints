@@ -126,6 +126,15 @@ def test_animated_uses_first_frame():
 # --- end to end --------------------------------------------------------------------------
 
 
+def test_footprint_of_a_near_identity():
+    """OpenCV's intersectConvexConvex gives 0 here; an identical image produces this."""
+    t = np.array([[0.999994738, -3.16392224e-06, 1.10472135e-06], [3.16392224e-06, 0.999994738, 9.61883005e-07],
+                  [0, 0, 1]])  # fmt: skip
+    assert all(v > 0.9999 for v in R.footprint(t, (1, 1.2487805), (1, 1.2487805)))
+    assert R.clipped_area(np.array([[-1, -1], [3, -1], [3, 3], [-1, 3]]), 2, 1) == 2.0
+    assert R.clipped_area(np.array([[5, 5], [6, 5], [6, 6]]), 1, 1) == 0.0
+
+
 def test_crop_and_collage():
     img = Image.open(SHAPES).convert("RGB")
     w, h = img.size
