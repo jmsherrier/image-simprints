@@ -1,19 +1,30 @@
-"""Fit recipe 2's constants on the research TUNING split only (tests/corpus/manifest.csv,
-split "tuning"; fetch it with `image-simprints fetch-corpus`).
+"""Fit recipe 2's constants and the hub guards on the research TUNING split only
+(tests/corpus/manifest.csv; fetch it with `image-simprints fetch-corpus`).
 
-    python scripts/fit_recipe_v2.py thresholds   # writes src/image_simprints/projection_v2.f32
-    python scripts/fit_recipe_v2.py tolerance    # tuning positives and false matches per t
+    python scripts/fit_recipe_v2.py thresholds         # writes src/image_simprints/projection_v2.f32
+    python scripts/fit_recipe_v2.py tolerance 2 [log]  # t, and guard (a), per t and N
+    python scripts/fit_recipe_v2.py hubs [log]         # guard (b): hub lists, per t and N
 
 thresholds: the projection P is recipe 1's (seed 20261013); T is the per-dimension median
-of P applied to the RootSIFT of every tuning original and unrelated photo's top 64
-keypoints at 512 px, with descriptors at each keypoint's octave. As the research fitted
-recipe 1's T on its tuning descriptors (granular_constraints/grid.py, fit_rootsift).
+of P applied to the RootSIFT of every "tuning" original and unrelated photo's top 64
+keypoints at 512 px, descriptors at each keypoint's octave. As the research fitted recipe
+1's T (granular_constraints/grid.py, fit_rootsift).
 
-tolerance: for each t, at min_votes 2 and span_check 0.05, creator 20 and verifier 64 at
-512 px: the tuning positives found (the test-mode manipulations of the 60 tuning originals)
-and the false matches among the 260 tuning photos, both directions. The research's rule
-picks t: the most positives found with no false match; ties to the smaller t. Pairs that
-are the same photograph (known duplicates) are listed so they can be set aside.
+Every table scores creator 20 and verifier 64 at 512 px (min_votes 2, span_check 0.05):
+positives are the test-mode manipulations of the 60 tuning originals; negatives are the
+unrelated photos against each other, and every derived image with no edit against every
+unrelated photo, both ways (the research's negatives). The research's rule picks: the most
+positives found with no genuine false match; ties to the smaller t, then the larger N.
+Pairs that are the same picture are set aside (SAME) after an eye check.
+
+tolerance: negatives include the 1,000 "tuning-extra" photos (about 3.5 million pairs).
+Guard (a): stored codes that agree with codes of more than N other photos in the corpus
+are ignored (recipe.mark_stop_codes).
+
+hubs: guard (b). The hub list is the "tuning-extra" photos' stored codes that agree with
+codes of more than N other "tuning-extra" photos; a creator skips keypoints whose code is
+within t of a hub code. Scored on the "tuning" split alone, so the list never sees the
+photos it is scored on.
 """
 
 import csv
@@ -32,7 +43,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "corpus"
 OUT = ROOT / "src" / "image_simprints" / "projection_v2.f32"
 GRID = (12, 16, 20, 24, 28, 32, 36, 40, 48)
-STOP_N = (1, 2, 3, 5, 10)  # the hub guard: ignore stored codes agreeing with more than N other photos
+STOP_N = (1, 2, 3, 5, 10)
+
+# Tuning photos that are the same picture (re-uploads, crops, a PNG and an SVG of one
+# symbol): the research's KNOWN_DUPLICATES, and the rest by eye. Set aside, as the research did.
+SAME = {frozenset(p) for p in [(f"unrelated/{a}", f"unrelated/{b}") for a, b in [
+    ("u057", "u058"), ("u064", "u068"), ("u072", "u073"), ("u094", "u095"), ("u111", "u112"), ("u131", "u132"),
+    ("u131", "u133"), ("u132", "u133"), ("u138", "u139"), ("u140", "u141"), ("u193", "u194")]]}  # fmt: skip
 
 
 def tuning(role: str, splits=("tuning",)) -> list[Path]:
@@ -52,61 +69,88 @@ def rootsift_of(path: Path) -> np.ndarray:
 
 
 def thresholds() -> None:
+    import hashlib
+
     with ProcessPoolExecutor() as ex:
         rs = np.concatenate(list(ex.map(rootsift_of, tuning("original") + tuning("unrelated"))))
     raw = np.fromfile(ROOT / "src" / "image_simprints" / "projection.f32", "<f4")
     p = raw[: 128 * 256].reshape(128, 256).astype(np.float64)
     t = np.median(rs.astype(np.float64) @ p, axis=0).astype("<f4")  # float32, so a multiple of 2^-40
     OUT.write_bytes(raw[: 128 * 256].astype("<f4").tobytes() + t.tobytes())
-    import hashlib
-
     print(f"{len(rs)} descriptors; wrote {OUT}; sha256 {hashlib.sha256(OUT.read_bytes()).hexdigest()}")
 
 
-def tolerance(recipe: int) -> None:
-    # The negatives include the 1,000 extra Pixabay photos ("tuning-extra"), so that a
-    # false-match rate near one in a million pairs shows; T stays as fitted on "tuning".
-    originals, unrelated = tuning("original"), tuning("unrelated", ("tuning", "tuning-extra"))
+def codes(recipe: int):
+    """Codes of the tuning originals (with their manipulations), the tuning unrelated
+    photos, and the tuning-extra photos; and each original's collage background."""
+    originals, unrelated = tuning("original"), tuning("unrelated")
+    extra = tuning("unrelated", ("tuning-extra",))
     common = {"recipe": recipe} if recipe != 1 else {}
     bgs = [unrelated[i % len(unrelated)] for i in range(len(originals))]
     with ProcessPoolExecutor() as ex:
         results = list(ex.map(T.work_original, [(i, p, bgs[i], {}, common) for i, p in enumerate(originals)]))
         plain = list(ex.map(T.work_plain, [(p, {}, common) for p in unrelated]))
-    combos = [(t, None) for t in GRID] + ([(t, n) for t in GRID if t >= 24 for n in STOP_N] if recipe == 2 else [])
-    log = []
-    print(f"recipe {recipe}: {sum(len(r['pairs']) for r in results)} positives; {len(plain)} unrelated photos")
-    print("| t | stop codes N | positives found | false matches, pool | false matches, derived/unrelated | genuine (same picture set aside) | genuine pairs |")
-    print("| --- | --- | --- | --- | --- | --- | --- |")
-    for t, n in combos:
-        over = {"tolerance_t": t}
-        res, pl = (results, plain) if n is None else T.guarded(results, plain, [], 20, n, {"recipe": recipe} | over)[:2]
-        pool = [r for r in res + pl if r["codes"]["original"]["creator"]["codes"]]
-        # The research's negatives too: every derived image with no photometric edit or rotation
-        # (identical, crops, collages, second overlap crops) against every unrelated photo, both
-        # ways, a collage never against its own background (granular_bench/bench.py).
-        derived = [(f"{r['name']}:{k}", r["codes"][k], f"unrelated/{bgs[i].stem}" if k.startswith("collage") else None)
-                   for i, r in enumerate(res)
-                   for k in r["codes"] if k == "identical" or k.startswith(("crop", "collage"))
-                   or (k.startswith("overlap") and not k.endswith("first"))]  # fmt: skip
-        unrel = [(r["name"], r["codes"]["original"], None) for r in pl]
-        rates, _ = T.positives(res, 20, 64, 512, over)
-        found = sum(v[0] for v in rates.values())
-        fm, _, hits = T.false_matches(pool, 20, 64, 512, over)
-        cross = across(derived, unrel, t, recipe) + across(unrel, derived, t, recipe)
-        pairs = sorted({tuple(sorted(h)) for h in hits} | {tuple(sorted(h)) for h in cross})
-        genuine = [p for p in pairs if frozenset(key(x) for x in p) not in SAME]
-        log.append({"t": t, "stop_codes": n, "found": found, "positives": sum(v[2] for v in rates.values()),
-                    "pairs": pairs, "genuine": genuine})  # fmt: skip
-        print(f"| {t} | {n or '-'} | {found} | {fm} | {len(cross)} | {len(genuine)} | {'; '.join(f'{a} ~ {b}' for a, b in genuine)} |",
-              flush=True)  # fmt: skip
-    if len(sys.argv) > 3:
-        Path(sys.argv[3]).write_text(json.dumps(log, indent=1), encoding="utf-8")
+        xs = list(ex.map(T.work_plain, [(p, {}, common) for p in extra]))
+    return results, plain, xs, bgs
 
-# Tuning photos that are the same picture (re-uploads, crops, a PNG and an SVG of one symbol):
-# the research's KNOWN_DUPLICATES, and u094 ~ u095 by eye. Set aside, as the research did.
-SAME = {frozenset(f"unrelated/{x}" for x in p) for p in [
-    ("u057", "u058"), ("u064", "u068"), ("u072", "u073"), ("u094", "u095"), ("u111", "u112"), ("u131", "u132"),
-    ("u131", "u133"), ("u132", "u133"), ("u138", "u139"), ("u140", "u141"), ("u193", "u194")]}  # fmt: skip
+
+def evaluate(results, plain, bgs, t, recipe) -> dict:
+    over = {"tolerance_t": t}
+    pool = [r for r in results + plain if r["codes"]["original"]["creator"]["codes"]]
+    derived = [(f"{r['name']}:{k}", r["codes"][k], f"unrelated/{bgs[i].stem}" if k.startswith("collage") else None)
+               for i, r in enumerate(results)
+               for k in r["codes"] if k == "identical" or k.startswith(("crop", "collage"))
+               or (k.startswith("overlap") and not k.endswith("first"))]  # fmt: skip
+    unrel = [(r["name"], r["codes"]["original"], None) for r in plain]
+    rates, _ = T.positives(results, 20, 64, 512, over)
+    _, n_pool, hits = T.false_matches(pool, 20, 64, 512, over)
+    cross = across(derived, unrel, t, recipe) + across(unrel, derived, t, recipe)
+    pairs = sorted({tuple(sorted(h)) for h in hits} | {tuple(sorted(h)) for h in cross})
+    return {"found": sum(v[0] for v in rates.values()), "positives": sum(v[2] for v in rates.values()),
+            "negative_pairs": n_pool + 2 * len(derived) * len(unrel), "pairs": pairs,
+            "genuine": [p for p in pairs if frozenset(key(x) for x in p) not in SAME]}  # fmt: skip
+
+
+def table(rows, log) -> None:
+    print("| t | N | positives found | negative pairs | false-match pairs | genuine | genuine pairs |")
+    print("| --- | --- | --- | --- | --- | --- | --- |")
+    for r in rows:
+        print(f"| {r['t']} | {r['n'] or '-'} | {r['found']} of {r['positives']} | {r['negative_pairs']:,} | {len(r['pairs'])} | "
+              f"{len(r['genuine'])} | {'; '.join(f'{a} ~ {b}' for a, b in r['genuine'])} |", flush=True)  # fmt: skip
+    if log:
+        Path(log).write_text(json.dumps(rows, indent=1), encoding="utf-8")
+
+
+def tolerance(recipe: int, log=None) -> None:
+    results, plain, xs, bgs = codes(recipe)
+    plain = plain + xs
+    rows = []
+    for t, n in [(t, None) for t in GRID] + ([(t, n) for t in GRID if t >= 24 for n in STOP_N] if recipe == 2 else []):
+        settings = {"recipe": recipe, "tolerance_t": t}
+        res, pl = (results, plain) if n is None else T.guarded(results, plain, [], 20, n, settings)[:2]
+        rows.append({"t": t, "n": n} | evaluate(res, pl, bgs, t, recipe))
+    table(rows, log)
+
+
+def hub_list(xs, t, n) -> list[str]:
+    """Stored codes (top 20) of the tuning-extra photos that agree with codes of more
+    than n other tuning-extra photos."""
+    stored = [T.first(r["codes"]["original"]["creator"], 20) for r in xs]
+    marked = R.mark_stop_codes(stored, n, {"recipe": 2, "tolerance_t": t})
+    return sorted({c["code"] for r in marked for c in r["codes"] if c.get("stop")})
+
+
+def hubs(log=None) -> None:
+    results, plain, xs, bgs = codes(2)
+    rows = []
+    for t in (24, 28, 32, 36, 40):
+        for n in STOP_N:
+            hub = hub_list(xs, t, n)
+            arr = np.array([np.frombuffer(bytes.fromhex(h), ">u8") for h in hub], np.uint64).reshape(-1, 4)
+            res, pl, _ = T.skip_hubs(results, plain, [], arr, t)
+            rows.append({"t": t, "n": n, "hubs": len(hub), "hub_codes": hub} | evaluate(res, pl, bgs, t, 2))
+            print(f"t {t}, N {n}: {len(hub)} hub codes", flush=True)
+    table(rows, log)
 
 
 def across(queries, refs, t, recipe) -> list:
@@ -141,5 +185,7 @@ if __name__ == "__main__":
     random.seed(0)
     if sys.argv[1] == "thresholds":
         thresholds()
+    elif sys.argv[1] == "hubs":
+        hubs(sys.argv[2] if len(sys.argv) > 2 else None)
     else:
-        tolerance(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
+        tolerance(int(sys.argv[2]) if len(sys.argv) > 2 else 2, sys.argv[3] if len(sys.argv) > 3 else None)

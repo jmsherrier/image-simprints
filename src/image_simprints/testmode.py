@@ -279,7 +279,7 @@ def run(args) -> dict:
     overs = json.loads(args.match_settings) if args.match_settings else {}
     overs = overs if isinstance(overs, list) else [overs]
     for o in overs:
-        R.settings_of({k: v for k, v in o.items() if k != "stop_codes"})
+        R.settings_of({k: v for k, v in o.items() if k not in ("stop_codes", "hub_codes")})
     R.settings_of(vset)  # unknown settings fail here, not in the workers
     with ProcessPoolExecutor(args.workers) as ex:
         if args.modified:
@@ -300,7 +300,8 @@ def run(args) -> dict:
     looks = [[r for r in rs if has_codes(r)] for rs in looks]
     timed = timing(originals, vset, common)
     for over in overs:
-        out = args.out if len(overs) == 1 else args.out / "-".join(f"{k}{v}" for k, v in over.items())
+        label = "-".join(f"{k}{Path(str(v)).stem if k == 'hub_codes' else v}" for k, v in over.items())
+        out = args.out if len(overs) == 1 else args.out / label
         score(args, over, out, results, plain, looks, pool, timed, len(originals), len(unrelated), len(sets), vset)
 
 
@@ -320,9 +321,32 @@ def guarded(results, plain, looks, cc, n, settings):
     return [mark(r) for r in results], [mark(r) for r in plain], [[mark(r) for r in rs] for rs in looks]
 
 
+def skip_hubs(results, plain, looks, hubs: np.ndarray, t: int):
+    """Copies whose "creator" runs leave out every code within t of a hub code, so a
+    creator's top N come from the next keypoints (the selection-time hub guard)."""
+
+    def keep(run):
+        c = R.parse(run)[0]
+        if not len(c) or not len(hubs):
+            return run
+        far = (R.hamming(c, hubs) > t).all(axis=1)
+        return run | {"codes": [x for x, f in zip(run["codes"], far, strict=True) if f]}
+
+    def mark(r):
+        return r | {"codes": {k: c | {"creator": keep(c["creator"])} for k, c in r["codes"].items()}}
+
+    return [mark(r) for r in results], [mark(r) for r in plain], [[mark(r) for r in rs] for rs in looks]
+
+
 def score(args, over, out, results, plain, looks, pool, timed, n_orig, n_unrel, n_sets, vset) -> dict:
     over = dict(over)
     stop = over.pop("stop_codes", None)
+    hub_file = over.pop("hub_codes", None)
+    if hub_file:
+        hubs = json.loads(Path(hub_file).read_text(encoding="utf-8"))
+        hubs = np.array([np.frombuffer(bytes.fromhex(h), ">u8") for h in hubs], np.uint64).reshape(-1, 4)
+        t = R.settings_of({"recipe": args.recipe} | over)["tolerance_t"]
+        results, plain, looks = skip_hubs(results, plain, looks, hubs, t)
     report = {
         "recipe": f"image-simprints/{args.recipe}", "date": date.today().isoformat(),
         "environment": {"platform": platform.platform(), "python": platform.python_version(),
@@ -330,7 +354,8 @@ def score(args, over, out, results, plain, looks, pool, timed, n_orig, n_unrel, 
         "inputs": {"originals": n_orig, "unrelated": n_unrel, "modified": bool(args.modified),
                    "lookalike_sets": n_sets, "lookalike_images": sum(map(len, looks)),
                    "positive_pairs": sum(len(r["pairs"]) for r in results), "verifier_settings": vset,
-                   "match_settings": over | ({"stop_codes": stop} if stop is not None else {}),
+                   "match_settings": over | ({"stop_codes": stop} if stop is not None else {})
+                   | ({"hub_codes": hub_file} if hub_file else {}),
                    "without_codes": [r["name"] for r in results + plain if not r["codes"]["original"]["creator"]["codes"]]},
         "timing_ms": timed,
         "configs": [],
