@@ -1,0 +1,351 @@
+{
+ "shapes.png": {
+  "recipe_version": "image-simprints/1",
+  "prepared_size": [
+   512,
+   384
+  ],
+  "codes": [
+   {
+    "chunk_idx": 0,
+    "code": "52cb6b5fbb6fc205600b09eb0524896584d204646719b51cf90848bd1224aa80",
+    "x": 0.753158,
+    "y": 0.360695,
+    "scale": 0.065891,
+    "angle": 100.702
+   },
+   {
+    "chunk_idx": 1,
+    "code": "94cb09dabd43e37923c3a8b345b5fd56774805282419b547b10e6dee10edef38",
+    "x": 0.753158,
+    "y": 0.360695,
+    "scale": 0.065891,
+    "angle": 180.319
+   },
+   {
+    "chunk_idx": 2,
+    "code": "d2df575fee6ac7556c43a043159f8972c6689d676719534994a6b5ab904057a4",
+    "x": 0.082677,
+    "y": 0.219588,
+    "scale": 0.031567,
+    "angle": 75.254
+   },
+   {
+    "chunk_idx": 3,
+    "code": "4cc6069159376d0c3a9066ffc8efbbdc3e11208f6cd524f767cbfd4b614f9ef7",
+    "x": 0.797419,
+    "y": 0.312607,
+    "scale": 0.021929,
+    "angle": 321.632
+   },
+   {
+    "chunk_idx": 4,
+    "code": "b8d518ca98bda879922e90367d68fbb54df9bc8801c5a5d33d186d5dc265a872",
+    "x": 0.823761,
+    "y": 0.051443,
+    "scale": 0.027816,
+    "angle": 5.528
+   },
+   {
+    "chunk_idx": 5,
+    "code": "214ca18673d4f87f90eec6dea0789798397724916c571ba7f380c10fd4b50a8c",
+    "x": 0.823761,
+    "y": 0.051443,
+    "scale": 0.027816,
+    "angle": 271.407
+   },
+   {
+    "chunk_idx": 6,
+    "code": "181f85281f1a0f7f7f06f282c0367f9f1a475581d7826cd31d7d698ae17b4d42",
+    "x": 0.76339,
+    "y": 0.284176,
+    "scale": 0.026734,
+    "angle": 260.96
+   },
+   {
+    "chunk_idx": 7,
+    "code": "47034653ea63e2402e7eea771dce99d0a521c13a2f7db726fd22e4b370c2aea5",
+    "x": 0.887669,
+    "y": 0.93626,
+    "scale": 0.0426,
+    "angle": 334.338
+   },
+   {
+    "chunk_idx": 8,
+    "code": "52cf0adb5013d47a373161fbc32d3bdf5375929e20713177059149c9624caed6",
+    "x": 0.730856,
+    "y": 0.622793,
+    "scale": 0.094235,
+    "angle": 188.588
+   },
+   {
+    "chunk_idx": 9,
+    "code": "b0cb3b9d772ed66ca72566dbc4a175ce525d1209a6b9b07595f131efe28cf39e",
+    "x": 0.730856,
+    "y": 0.622793,
+    "scale": 0.094235,
+    "angle": 358.218
+   },
+   {
+    "chunk_idx": 10,
+    "code": "d87418c6e6c3b7173dd1ac96aed41a01bee8bfdffa451020a036873a9ca2314c",
+    "x": 0.78843,
+    "y": 0.857831,
+    "scale": 0.036038,
+    "angle": 247.392
+   },
+   {
+    "chunk_idx": 11,
+    "code": "4ecb7b4034098397b1135a8fc0be0653aad205212e1b7b08d14511e1b0e45b89",
+    "x": 0.72642,
+    "y": 0.885428,
+    "scale": 0.034187,
+    "angle": 254.415
+   },
+   {
+    "chunk_idx": 12,
+    "code": "31cb8ac95dc5dd51af2253fb7b2b2fff77d1128ec16d65770f1ba9c900dc9f76",
+    "x": 0.674993,
+    "y": 0.330804,
+    "scale": 0.080268,
+    "angle": 7.48
+   },
+   {
+    "chunk_idx": 13,
+    "code": "23abc37fe8e082408f6ba8c351b5a870e52cb9722d393405bc6bc6ec3d41bba4",
+    "x": 0.664675,
+    "y": 0.05543,
+    "scale": 0.043376,
+    "angle": 100.171
+   },
+   {
+    "chunk_idx": 14,
+    "code": "14ed3bdca70bd32bf5091391a7b6054bb662372c66193c0a585c2ba498a27dc8",
+    "x": 0.664675,
+    "y": 0.05543,
+    "scale": 0.043376,
+    "angle": 253.192
+   },
+   {
+    "chunk_idx": 15,
+    "code": "c2879368e8fbf7d92e7600f717fd9971ffb0f9e627edbd37bd1aa61b0848b624",
+    "x": 0.051129,
+    "y": 0.482864,
+    "scale": 0.03134,
+    "angle": 66.238
+   },
+   {
+    "chunk_idx": 16,
+    "code": "67f3e75fd873e2c1ae2b88e34d84a974ad0549e28519a732b24fe438004de3b4",
+    "x": 0.051129,
+    "y": 0.482864,
+    "scale": 0.03134,
+    "angle": 104.901
+   },
+   {
+    "chunk_idx": 17,
+    "code": "8ab52f4a484baae35250b2bfe8ca47dbaef1c8292b39654a7f45396114d5df3d",
+    "x": 0.867567,
+    "y": 0.844754,
+    "scale": 0.020188,
+    "angle": 338.685
+   },
+   {
+    "chunk_idx": 18,
+    "code": "c28bf25fe66bc3da598da826cdfc99420cb16f21261df002b95e6d3af2e831aa",
+    "x": 0.806163,
+    "y": 0.265336,
+    "scale": 0.044094,
+    "angle": 258.229
+   },
+   {
+    "chunk_idx": 19,
+    "code": "a79331078176725bf5ad929e4570c5916a77c5780676af25b03c4ca7f0f98cca",
+    "x": 0.821187,
+    "y": 0.267235,
+    "scale": 0.052302,
+    "angle": 89.799
+   }
+  ],
+  "reason": null
+ },
+ "portrait.png": {
+  "recipe_version": "image-simprints/1",
+  "prepared_size": [
+   341,
+   512
+  ],
+  "codes": [
+   {
+    "chunk_idx": 0,
+    "code": "55cd239825262be272a4d3d7f25b768f340db7b12411eb46bc8531a7f0e54cdc",
+    "x": 0.684841,
+    "y": 0.864998,
+    "scale": 0.106013,
+    "angle": 87.277
+   },
+   {
+    "chunk_idx": 1,
+    "code": "228dd35e7d2c200a96aeca9d316e47bc1965b4837c7130c6fec9c92cc1830c5e",
+    "x": 0.890224,
+    "y": 0.683517,
+    "scale": 0.027233,
+    "angle": 90.837
+   },
+   {
+    "chunk_idx": 2,
+    "code": "2201995efd142808c2afc29d39ff47bd1965fc836d5130ce3ef9e920c1b38c5e",
+    "x": 0.890224,
+    "y": 0.683517,
+    "scale": 0.027233,
+    "angle": 269.353
+   },
+   {
+    "chunk_idx": 3,
+    "code": "9bdf07e318a5a9e550d29ee4788ae3ea6cf584d373d181da7f8159d10f57c8c4",
+    "x": 0.626721,
+    "y": 0.834247,
+    "scale": 0.020647,
+    "angle": 12.056
+   },
+   {
+    "chunk_idx": 4,
+    "code": "9bdf0be318a5a9e750f29ee4788ae7ea68f5849173d181da7fa159510f5748c4",
+    "x": 0.628951,
+    "y": 0.835226,
+    "scale": 0.02325,
+    "angle": 16.867
+   },
+   {
+    "chunk_idx": 5,
+    "code": "3bc7004b54a7f257b404d2be786bd7fb7bf5109a575da1e63d1849794045cc14",
+    "x": 0.570504,
+    "y": 0.672252,
+    "scale": 0.06392,
+    "angle": 198.761
+   },
+   {
+    "chunk_idx": 6,
+    "code": "1bd70d6a18a3bbe154729c64789ae7e3eeb5d8c313b9c9c87d2533f19d416865",
+    "x": 0.599035,
+    "y": 0.844655,
+    "scale": 0.022916,
+    "angle": 17.241
+   },
+   {
+    "chunk_idx": 7,
+    "code": "148ba80e858bd37da10f80026735bd31caf29b60065ef004381e5d89386dd102",
+    "x": 0.360976,
+    "y": 0.790429,
+    "scale": 0.128143,
+    "angle": 255.79
+   },
+   {
+    "chunk_idx": 8,
+    "code": "148fa9ee8589f35da007020a4735b533cbf09d60065ef10c101e9c899878f90a",
+    "x": 0.382434,
+    "y": 0.791792,
+    "scale": 0.138904,
+    "angle": 249.072
+   },
+   {
+    "chunk_idx": 9,
+    "code": "74cb0b57d7ccf75d750fc8ca4f8c9d51a47016e0c71e35069106d8a9b8a8e38a",
+    "x": 0.608978,
+    "y": 0.23371,
+    "scale": 0.144407,
+    "angle": 19.353
+   },
+   {
+    "chunk_idx": 10,
+    "code": "b6cf3942d5fbf741b70e40f2dfe4bd792d58112887dcb527199e2cae62c5b3b2",
+    "x": 0.608978,
+    "y": 0.23371,
+    "scale": 0.144407,
+    "angle": 173.128
+   },
+   {
+    "chunk_idx": 11,
+    "code": "0233c22bad72f25f1e6d0adf1cf68f70a1f69872241fdb26f88ee05f84003821",
+    "x": 0.659153,
+    "y": 0.36168,
+    "scale": 0.047903,
+    "angle": 3.955
+   },
+   {
+    "chunk_idx": 12,
+    "code": "bb912e1a1827e3281236f261708843de5c0bc9a95480a1c23f7d59b441cfbc22",
+    "x": 0.074136,
+    "y": 0.476551,
+    "scale": 0.047334,
+    "angle": 355.937
+   },
+   {
+    "chunk_idx": 13,
+    "code": "9b93fb49504dabe3d1d090c74c8a0343c6f5cca5633941ca6fd1757c9ae5d332",
+    "x": 0.833983,
+    "y": 0.803483,
+    "scale": 0.055672,
+    "angle": 88.838
+   },
+   {
+    "chunk_idx": 14,
+    "code": "64ca2816ddf6a0be7409dda4466499159ca64cff34c9b50cf884583fc3036c96",
+    "x": 0.890634,
+    "y": 0.229877,
+    "scale": 0.035107,
+    "angle": 89.017
+   },
+   {
+    "chunk_idx": 15,
+    "code": "63e3c237a8e3a2d43c0928f67dfdbd58b984393e25149f26b85e64370348ae34",
+    "x": 0.858897,
+    "y": 0.204001,
+    "scale": 0.032257,
+    "angle": 79.21
+   },
+   {
+    "chunk_idx": 16,
+    "code": "f9d5789e7424201011aad71a684c181f5d09eebf3045239384007917f32d361e",
+    "x": 0.111254,
+    "y": 0.127321,
+    "scale": 0.034403,
+    "angle": 87.446
+   },
+   {
+    "chunk_idx": 17,
+    "code": "4dff465a7b41e3017e11fba7f48f93cba753ca3888111e4ee64da720105b4905",
+    "x": 0.852497,
+    "y": 0.614091,
+    "scale": 0.081376,
+    "angle": 289.704
+   },
+   {
+    "chunk_idx": 18,
+    "code": "62b80b5fee43b57a676a689705fc0950f12eec6e2d5d9547f08ee22a14808ebd",
+    "x": 0.608542,
+    "y": 0.613082,
+    "scale": 0.03133,
+    "angle": 282.08
+   },
+   {
+    "chunk_idx": 19,
+    "code": "6ffbf357e272e3d01f53e8a6c7bc9850277c6a6529711720a503c7283481972c",
+    "x": 0.470522,
+    "y": 0.643006,
+    "scale": 0.039229,
+    "angle": 95.522
+   }
+  ],
+  "reason": null
+ },
+ "small.png": {
+  "recipe_version": "image-simprints/1",
+  "prepared_size": [
+   24,
+   24
+  ],
+  "codes": [],
+  "reason": "too small: prepared image is 24x24, needs 32 px on each side"
+ }
+}
