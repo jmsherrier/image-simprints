@@ -276,6 +276,8 @@ def run(args) -> dict:
     sets = sorted(d for d in args.lookalikes.iterdir() if d.is_dir()) if args.lookalikes else []
     vset = json.loads(args.verifier_settings) if args.verifier_settings else {}
     common = {"recipe": args.recipe} if args.recipe != 1 else {}
+    over = json.loads(args.match_settings) if args.match_settings else {}
+    R.settings_of(over)
     R.settings_of(vset)  # unknown settings fail here, not in the workers
     with ProcessPoolExecutor(args.workers) as ex:
         if args.modified:
@@ -300,15 +302,15 @@ def run(args) -> dict:
                         "opencv": cv2.__version__, "numpy": np.__version__, "pillow": Image.__version__},
         "inputs": {"originals": len(originals), "unrelated": len(unrelated), "modified": bool(args.modified),
                    "lookalike_sets": len(sets), "lookalike_images": sum(map(len, looks)),
-                   "positive_pairs": sum(len(r["pairs"]) for r in results), "verifier_settings": vset,
+                   "positive_pairs": sum(len(r["pairs"]) for r in results), "verifier_settings": vset, "match_settings": over,
                    "without_codes": [r["name"] for r in results + plain if not has_codes(r)]},
         "timing_ms": timing(originals, vset, common),
         "configs": [],
     }  # fmt: skip
     for cc, vc, vs in itertools.product(CREATOR_CODES, VERIFIER_CODES, VERIFIER_SIZES):
-        rates, ms_match = positives(results, cc, vc, vs)
-        fm, pairs, hits = false_matches(pool, cc, vc, vs)
-        la = [false_matches(rs, cc, vc, vs) for rs in looks if len(rs) > 1]
+        rates, ms_match = positives(results, cc, vc, vs, over)
+        fm, pairs, hits = false_matches(pool, cc, vc, vs, over)
+        la = [false_matches(rs, cc, vc, vs, over) for rs in looks if len(rs) > 1]
         total = [sum(v[i] for v in rates.values()) for i in range(3)]
         report["configs"].append({
             "creator_codes": cc, "verifier_codes": vc, "verifier_prepared_size": vs,
@@ -336,7 +338,8 @@ def markdown(rep: dict) -> str:
         f"Recipe `{rep['recipe']}`; {inp['originals']} originals, {inp['unrelated']} unrelated images, "
         f"{inp['lookalike_images']} look-alikes in {inp['lookalike_sets']} sets, {inp['positive_pairs']} positive pairs; "
         f"{env['platform']}, Python {env['python']}, OpenCV {env['opencv']}."
-        + (f" Verifier settings: `{json.dumps(inp['verifier_settings'])}`." if inp["verifier_settings"] else ""),
+        + (f" Verifier settings: `{json.dumps(inp['verifier_settings'])}`." if inp["verifier_settings"] else "")
+        + (f" Match settings: `{json.dumps(inp['match_settings'])}`." if inp.get("match_settings") else ""),
         "",
         "## Sweep",
         "",
@@ -422,6 +425,7 @@ def main(argv=None) -> None:
     t.add_argument("--modified", type=Path, help="folder of modified copies named <original stem>__<label>.<ext>")
     t.add_argument("--lookalikes", type=Path, help="folder of subfolders, each a set of different photos by one photographer")
     t.add_argument("--recipe", type=int, default=1, help="recipe for both sides (2: experimental)")
+    t.add_argument("--match-settings", help="settings for matching only, as JSON, e.g. '{\"tolerance_t\": 28}'")
     t.add_argument("--verifier-settings", help="extra settings for the verifier only, as JSON, e.g. '{\"candidates\": 4096}'")
     t.add_argument("--out", type=Path, default=Path("report"), help="where report.json and summary.md go")
     t.add_argument("--workers", type=int, default=os.cpu_count())
