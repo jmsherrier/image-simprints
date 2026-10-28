@@ -44,6 +44,7 @@ CACHE = ROOT / ".cache" / "corpus"
 OUT = ROOT / "src" / "image_simprints" / "projection_v2.f32"
 GRID = (12, 16, 20, 24, 28, 32, 36, 40, 48)
 STOP_N = (1, 2, 3, 5, 10)
+TMAX = max(GRID)
 
 # Tuning photos that are the same picture (re-uploads, crops, a PNG and an SVG of one
 # symbol): the research's KNOWN_DUPLICATES, and the rest by eye. Set aside, as the research did.
@@ -95,6 +96,7 @@ def codes(recipe: int):
 
 
 def evaluate(results, plain, bgs, t, recipe) -> dict:
+    """The reference definition of a tuning row (slow: every distance, every time); Negatives is the fast one."""
     over = {"tolerance_t": t}
     pool = [r for r in results + plain if r["codes"]["original"]["creator"]["codes"]]
     derived = [(f"{r['name']}:{k}", r["codes"][k], f"unrelated/{bgs[i].stem}" if k.startswith("collage") else None)
@@ -121,14 +123,97 @@ def table(rows, log) -> None:
         Path(log).write_text(json.dumps(rows, indent=1), encoding="utf-8")
 
 
+class Negatives:
+    """The negatives of evaluate(), scored fast: every code pair within TMAX between a
+    query's verifier codes and a reference's whole 64-code creator run is found once;
+    a setting then only says which of those 64 codes are stored (the first 20, less any
+    a guard drops) and filters by t. Same vote and judgement as evaluate()."""
+
+    def __init__(self, results, plain, bgs, recipe):
+        self.recipe = recipe
+        base = {r["name"]: r for r in results + plain}
+        pool = [r["name"] for r in results + plain if r["codes"]["original"]["creator"]["codes"]]
+        derived = [(f"{r['name']}:{k}", f"unrelated/{bgs[i].stem}" if k.startswith("collage") else None)
+                   for i, r in enumerate(results)
+                   for k in r["codes"] if k == "identical" or k.startswith(("crop", "collage"))
+                   or (k.startswith("overlap") and not k.endswith("first"))]  # fmt: skip
+        unrel = [(r["name"], None) for r in plain]
+
+        def run(name, size):
+            img, _, k = name.partition(":")
+            c = base[img]["codes"][k or "original"]
+            return c["creator"] if size == "creator" else c[512]
+
+        self.run = run
+        self.n_pairs = len(pool) * (len(pool) - 1) + 2 * len(derived) * len(unrel)
+        self.blocks = [self._block([(n, None) for n in pool], [(n, None) for n in pool], True),
+                       self._block(derived, unrel, False), self._block(unrel, derived, False)]
+
+    def _block(self, queries, refs, pool):
+        parsed = [R.parse(self.run(n, "creator")) for n, _ in refs]
+        b = {"queries": queries, "refs": refs, "pool": pool, "sizes": [p[2] for p in parsed],
+             "codes": np.concatenate([p[0] for p in parsed]), "geo": np.concatenate([p[1] for p in parsed]),
+             "owner": np.repeat(np.arange(len(refs)), [len(p[0]) for p in parsed]),
+             "rank": np.concatenate([[c["chunk_idx"] for c in self.run(n, "creator")["codes"]] for n, _ in refs])}  # fmt: skip
+        b["hits"] = []
+        for n, _ in queries:
+            cq, gq, size_q = R.parse(T.first(self.run(n, 512), 64))
+            found = [np.nonzero(R.hamming(cq, b["codes"][k : k + T.CHUNK]) <= TMAX) for k in range(0, len(b["codes"]), T.CHUNK)]
+            qi = np.concatenate([f[0] for f in found]).astype(int) if len(cq) else np.zeros(0, int)
+            rj = np.concatenate([f[1] + k * T.CHUNK for k, f in enumerate(found)]).astype(int) if len(cq) else np.zeros(0, int)
+            d = np.bitwise_count(cq[qi] ^ b["codes"][rj]).sum(axis=1) if len(qi) else np.zeros(0, int)
+            b["hits"].append((qi, rj, d, gq, size_q))
+        return b
+
+    def score(self, creators: dict, t: int) -> list:
+        """False-match pairs when each reference stores creators[name]'s first 20 codes."""
+        s = R.settings_of({"recipe": self.recipe, "tolerance_t": t})
+        out = []
+        for b in self.blocks:
+            stored = np.zeros(len(b["codes"]), bool)
+            for j, (n, _) in enumerate(b["refs"]):
+                keep = {c["chunk_idx"] for c in T.first(creators[n], 20)["codes"] if not c.get("stop")}
+                mine = b["owner"] == j
+                stored[mine] = np.isin(b["rank"][mine], list(keep))
+            for q, ((qname, qbg), (qi, rj, d, gq, size_q)) in enumerate(zip(b["queries"], b["hits"], strict=True)):
+                keep = (d <= t) & stored[rj]
+                if b["pool"]:
+                    keep &= b["owner"][rj] != q
+                if not keep.any():
+                    continue
+                best, mem = R.votes(qi[keep], rj[keep], b["owner"], gq, b["geo"], len(b["refs"]))
+                for j in np.flatnonzero(best >= s["min_votes"]):
+                    rname, rbg = b["refs"][j]
+                    if related(qbg, rname) or related(rbg, qname):
+                        continue
+                    if R.judge(int(best[j]), mem[j], gq, b["geo"], size_q, b["sizes"][j], s)["relationship"] != "none":
+                        out.append(tuple(sorted((qname, rname))))
+        return sorted(set(out))
+
+
+def creators_of(results, plain) -> dict:
+    out = {r["name"]: r["codes"]["original"]["creator"] for r in results + plain}
+    out |= {f"{r['name']}:{k}": c["creator"] for r in results for k, c in r["codes"].items()}
+    return out
+
+
+def row(t, n, res, pl, neg: Negatives) -> dict:
+    rates, _ = T.positives(res, 20, 64, 512, {"tolerance_t": t})
+    pairs = [list(p) for p in neg.score(creators_of(res, pl), t)]
+    return {"t": t, "n": n, "found": sum(v[0] for v in rates.values()), "positives": sum(v[2] for v in rates.values()),
+            "negative_pairs": neg.n_pairs, "pairs": pairs,
+            "genuine": [p for p in pairs if frozenset(key(x) for x in p) not in SAME]}  # fmt: skip
+
+
 def tolerance(recipe: int, log=None) -> None:
     results, plain, xs, bgs = codes(recipe)
     plain = plain + xs
+    neg = Negatives(results, plain, bgs, recipe)
     rows = []
     for t, n in [(t, None) for t in GRID] + ([(t, n) for t in GRID if t >= 24 for n in STOP_N] if recipe == 2 else []):
-        settings = {"recipe": recipe, "tolerance_t": t}
-        res, pl = (results, plain) if n is None else T.guarded(results, plain, [], 20, n, settings)[:2]
-        rows.append({"t": t, "n": n} | evaluate(res, pl, bgs, t, recipe))
+        res, pl = (results, plain) if n is None else T.guarded(results, plain, [], 20, n, {"recipe": recipe, "tolerance_t": t})[:2]
+        rows.append(row(t, n, res, pl, neg))
+        print(f"t {t}, N {n}: {rows[-1]['found']} found, {len(rows[-1]['genuine'])} genuine", flush=True)
     table(rows, log)
 
 
@@ -142,24 +227,27 @@ def hub_list(xs, t, n) -> list[str]:
 
 def hubs(log=None) -> None:
     results, plain, xs, bgs = codes(2)
+    neg = Negatives(results, plain, bgs, 2)
     rows = []
     for t in (24, 28, 32, 36, 40):
         for n in STOP_N:
             hub = hub_list(xs, t, n)
             arr = np.array([np.frombuffer(bytes.fromhex(h), ">u8") for h in hub], np.uint64).reshape(-1, 4)
             res, pl, _ = T.skip_hubs(results, plain, [], arr, t)
-            rows.append({"t": t, "n": n, "hubs": len(hub), "hub_codes": hub} | evaluate(res, pl, bgs, t, 2))
-            print(f"t {t}, N {n}: {len(hub)} hub codes", flush=True)
+            rows.append(row(t, n, res, pl, neg) | {"hubs": len(hub), "hub_codes": hub})
+            print(f"t {t}, N {n}: {len(hub)} hub codes, {rows[-1]['found']} found, {len(rows[-1]['genuine'])} genuine", flush=True)
     table(rows, log)
+
+
+def related(bg, other) -> bool:
+    """A collage and its own background, or a known duplicate of it."""
+    return bg is not None and (bg == key(other) or frozenset((bg, key(other))) in SAME)
 
 
 def across(queries, refs, t, recipe) -> list:
     """False matches of each query's verifier codes (64 at 512 px) against every
     reference's creator codes (20). A collage is never scored against its own background
     or a known duplicate of it."""
-
-    def related(bg, other):
-        return bg is not None and (bg == key(other) or frozenset((bg, key(other))) in SAME)
 
     s = R.settings_of({"recipe": recipe, "tolerance_t": t})
     parsed = [R.parse(T.first(c["creator"], 20)) for _, c, _ in refs]
