@@ -1,1 +1,74 @@
 # image-simprints
+
+Granular image codes. Each image gets a short list of 256-bit codes, one per
+distinctive spot (SIFT keypoint). Comparing two lists tells you whether one image
+is inside the other, contains it, overlaps it, or is the same picture. This holds
+after crops, resizing, re-encoding, colour changes and rotation.
+
+This is a proof of concept for Liccium. It is ported from the bakau research
+code. Everything runs on the CPU: no GPU, no network, no model downloads.
+
+```sh
+pip install .            # Python 3.12; numpy, opencv-python-headless, pillow (pinned)
+```
+
+```python
+from image_simprints import generate, match
+
+# Creator side, at declaration: store this with the declaration.
+creator = generate("original.jpg", "creator")      # path, bytes, or an RGB numpy frame
+
+# Verifier side: codes for the image being checked...
+verifier = generate("found_online.jpg", "verifier")
+
+# ...compared with each candidate your index returned.
+result = match(verifier, creator)
+print(result["relationship"], result["overlap_fraction"], result["agreeing_codes"])
+```
+
+`generate` returns `{recipe_version, prepared_size: (w, h), codes: [{chunk_idx,
+code, x, y, scale, angle}], reason}`. `code` is 64 hex characters, and `x`, `y`
+are fractions of the prepared width and height. `reason` explains an empty list,
+for example an image that is too small.
+
+`match` returns:
+- `relationship`: one of `identical`, `contained_in` (the verifier's image is
+  inside the candidate's), `contains`, `overlapping` or `none`.
+- `overlap_fraction`: `{verifier, candidate}`, the share of each image the other
+  covers.
+- `agreeing_codes`: how many codes agreed.
+
+Settings and their defaults: `creator_codes=20`, `verifier_codes=64`,
+`tolerance_t=24`, `min_votes=2`, `prepared_size=512`, `span_check=0.05`. Each
+can be overridden, for example `generate(src, "verifier", {"prepared_size":
+1024})`. Overrides are recorded in `recipe_version`. A damaged or unsupported
+file raises `image_simprints.ImageError`.
+
+## Test mode
+
+```sh
+image-simprints test path/to/originals --unrelated path/to/unrelated --out report
+```
+
+Test mode manipulates each original in memory: crops, resizing, JPEG, WebP and
+AVIF re-encoding, colour changes, rotation, collages and overlaps. It reports
+the match rate per manipulation. It also reports false matches between every
+pair of unrelated images, compared offline, and the time per image. It sweeps
+`creator_codes` over {10, 20, 50}, `verifier_codes` over {32, 64} and the
+verifier's `prepared_size` over {512, 1024}. Output: `report/report.json` and
+`report/summary.md`. To test your own modified copies instead, use
+`--modified DIR`, with files named `<original stem>__<label>.<ext>`.
+
+## Documents
+
+- [RECIPE.md](RECIPE.md): the recipe, precisely enough to reimplement, with
+  test vectors.
+- [INTEGRATION.md](INTEGRATION.md): how to wire this into an app.
+
+## Tests
+
+```sh
+pip install -e ".[test]" && pytest
+```
+
+Apache-2.0. © 2026 Joseph Sherrier.
