@@ -58,6 +58,29 @@ pair of unrelated images, compared offline, and the time per image. It sweeps
 verifier's `prepared_size` over {512, 1024}. Output: `report/report.json` and
 `report/summary.md`. To test your own modified copies instead, use
 `--modified DIR`, with files named `<original stem>__<label>.<ext>`.
+`--lookalikes DIR` takes a folder of subfolders. Each subfolder holds different
+photos by one photographer, and their false matches are reported separately.
+`--verifier-settings '{"candidates": 4096}'` changes settings for the verifier
+only.
+
+## Test corpus
+
+[`tests/corpus/manifest.csv`](tests/corpus/manifest.csv) lists 1,358 CC0 and
+public-domain photographs from Wikimedia Commons. For each one it gives the page,
+the file URL, the licence and a SHA-256. The set is the bakau research
+benchmark's test split (150 originals, 400 unrelated photos, 208 look-alikes in
+44 sets of photos by one photographer), plus 600 more unrelated photos from the
+same Commons category. The images are not in the repository. `fetch-corpus`
+downloads them and checks every hash; it is the package's only network use.
+
+```sh
+image-simprints fetch-corpus      # into .cache/corpus (gitignored)
+image-simprints test .cache/corpus/originals --unrelated .cache/corpus/unrelated \
+    --lookalikes .cache/corpus/lookalikes --out tests/corpus/report
+```
+
+The committed results are in
+[`tests/corpus/report/summary.md`](tests/corpus/report/summary.md).
 
 ## Documents
 
