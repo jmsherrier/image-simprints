@@ -32,18 +32,24 @@ def shapes(w, h, seed) -> np.ndarray:
     return np.clip(img + rng.normal(0, 4, img.shape), 0, 255).astype(np.uint8)
 
 
-def main() -> None:
+def main(recipe: int) -> None:
+    """Recipe 1 makes the images and expected.json; another recipe, expected_v<n>.json
+    from the same images."""
     HERE.mkdir(exist_ok=True)
     images = {"shapes.png": shapes(640, 480, 1), "portrait.png": shapes(480, 720, 2),
               "small.png": shapes(24, 24, 3)}  # fmt: skip
     expected = {}
     for name, rgb in images.items():
-        cv2.imwrite(str(HERE / name), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
-        expected[name] = generate(HERE / name, "creator")
-    (HERE / "expected.json").write_text(json.dumps(expected, indent=1) + "\n", encoding="utf-8")
+        if recipe == 1:
+            cv2.imwrite(str(HERE / name), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
+        expected[name] = generate(HERE / name, "creator", {"recipe": recipe} if recipe != 1 else None)
+    out = HERE / ("expected.json" if recipe == 1 else f"expected_v{recipe}.json")
+    out.write_text(json.dumps(expected, indent=1) + "\n", encoding="utf-8")
     for name, r in expected.items():
         print(name, r["prepared_size"], len(r["codes"]), r["reason"])
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else 1)

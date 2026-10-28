@@ -41,10 +41,12 @@ def test_threads_agree_with_serial():
         assert all(r == want for r in ex.map(lambda _: s.generate(SHAPES, "verifier"), range(8)))
 
 
+@pytest.mark.parametrize("recipe", [1, 2])
 @pytest.mark.parametrize("name", ["shapes.png", "portrait.png", "small.png"])
-def test_vectors(name):
-    want = json.loads((V / "expected.json").read_text(encoding="utf-8"))[name]
-    got = json.loads(json.dumps(s.generate(V / name, "creator")))
+def test_vectors(name, recipe):
+    vectors = "expected.json" if recipe == 1 else f"expected_v{recipe}.json"
+    want = json.loads((V / vectors).read_text(encoding="utf-8"))[name]
+    got = json.loads(json.dumps(s.generate(V / name, "creator", {"recipe": recipe})))
     assert {k: v for k, v in got.items() if k != "codes"} == {k: v for k, v in want.items() if k != "codes"}
     assert [c["code"] for c in got["codes"]] == [c["code"] for c in want["codes"]]  # bit for bit
     for g, w in zip(got["codes"], want["codes"], strict=True):  # float32 keypoints: the 6th decimal may differ
@@ -74,6 +76,8 @@ def test_bad_arguments():
     a = s.generate(SHAPES, "creator")
     with pytest.raises(ValueError):
         s.match(a | {"recipe_version": "other/1"}, a)
+    with pytest.raises(ValueError):  # recipes are never mixed
+        s.match(s.generate(SHAPES, "verifier", {"recipe": 2}), a)
 
 
 def test_too_small_gives_no_codes_and_a_reason():
@@ -135,18 +139,20 @@ def test_footprint_of_a_near_identity():
     assert R.clipped_area(np.array([[5, 5], [6, 5], [6, 6]]), 1, 1) == 0.0
 
 
-def test_crop_and_collage():
+@pytest.mark.parametrize("recipe", [1, 2])
+def test_crop_and_collage(recipe):
+    r = {"recipe": recipe}
     img = Image.open(SHAPES).convert("RGB")
     w, h = img.size
-    creator = s.generate(SHAPES, "creator")
-    crop = s.generate(np.asarray(img.crop((0, 0, w * 3 // 4, h * 3 // 4))), "verifier")
+    creator = s.generate(SHAPES, "creator", r)
+    crop = s.generate(np.asarray(img.crop((0, 0, w * 3 // 4, h * 3 // 4))), "verifier", r)
     assert s.match(crop, creator)["relationship"] == "contained_in"
     collage = Image.open(V / "portrait.png").convert("RGB")
     collage.paste(img.resize((w * 2 // 3, h * 2 // 3), Image.Resampling.LANCZOS), (40, 100))
-    m = s.match(s.generate(np.asarray(collage), "verifier"), creator)
+    m = s.match(s.generate(np.asarray(collage), "verifier", r), creator)
     assert m["relationship"] == "contains" and m["overlap_fraction"]["candidate"] > 0.95
-    reverse = s.match(s.generate(SHAPES, "verifier"), s.generate(np.asarray(collage), "creator"))
+    reverse = s.match(s.generate(SHAPES, "verifier", r), s.generate(np.asarray(collage), "creator", r))
     assert reverse["relationship"] == "contained_in"
-    unrelated = s.match(s.generate(V / "portrait.png", "verifier"), creator)
+    unrelated = s.match(s.generate(V / "portrait.png", "verifier", r), creator)
     assert unrelated == {"relationship": "none", "overlap_fraction": {"verifier": 0.0, "candidate": 0.0},
                          "agreeing_codes": 0}  # fmt: skip

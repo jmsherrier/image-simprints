@@ -161,11 +161,11 @@ def derive(src: Image.Image, bg: Image.Image | None, rng: random.Random):
 # --- codes, in worker processes --------------------------------------------------------
 
 
-def codes_for(source, as_verifier=True, vset=None) -> dict:
+def codes_for(source, as_verifier=True, vset=None, common=None) -> dict:
     """{"creator": generate() at defaults with 64 codes, size: the verifier's at that
     prepared size}. Creator codes are the first creator_codes of the "creator" run:
     the ranking does not depend on N. vset: extra settings for the verifier only."""
-    base = {"verifier_codes": 64}
+    base = {"verifier_codes": 64} | (common or {})
     out = {"creator": R.generate(source, "verifier", base)}
     for size in VERIFIER_SIZES if as_verifier else ():
         s = base | {"prepared_size": size} | (vset or {})
@@ -174,37 +174,38 @@ def codes_for(source, as_verifier=True, vset=None) -> dict:
 
 
 def work_original(job) -> dict:
-    index, path, bg_path, vset = job
+    index, path, bg_path, vset, common = job
     src = Image.fromarray(R.decode(path))
     bg = Image.fromarray(R.decode(bg_path)) if bg_path else None
     imgs, pairs = derive(src, bg, random.Random(index))
     imgs["original"] = Path(path).read_bytes()
     verifiers = {v for _, v, _ in pairs} | {"original"}
-    codes = {name: codes_for(data, name in verifiers, vset) for name, data in imgs.items()}
+    codes = {name: codes_for(data, name in verifiers, vset, common) for name, data in imgs.items()}
     return {"name": f"{path.parent.name}/{path.name}", "codes": codes, "pairs": pairs}
 
 
 def work_modified(job) -> dict:
-    path, modified, vset = job
-    codes, pairs = {"original": codes_for(path, True, vset)}, []
+    path, modified, vset, common = job
+    codes, pairs = {"original": codes_for(path, True, vset, common)}, []
     for m in modified:
-        codes[m.name] = codes_for(m, True, vset)
+        codes[m.name] = codes_for(m, True, vset, common)
         pairs.append((m.stem.split("__", 1)[1], m.name, "original"))
     return {"name": f"{path.parent.name}/{path.name}", "codes": codes, "pairs": pairs}
 
 
 def work_plain(job) -> dict:
-    path, vset = job
-    return {"name": f"{path.parent.name}/{path.name}", "codes": {"original": codes_for(path, True, vset)}, "pairs": []}
+    path, vset, common = job
+    return {"name": f"{path.parent.name}/{path.name}", "codes": {"original": codes_for(path, True, vset, common)},
+            "pairs": []}
 
 
-def timing(paths, vset) -> dict:
+def timing(paths, vset, common=None) -> dict:
     """Milliseconds per image in this one process: decoding alone, then generate as
     creator at 512 and as verifier at each size (decoding included)."""
     ms = collections.defaultdict(list)
     for p in paths:
-        calls = [("decode", lambda: R.decode(p)), ("creator at 512", lambda: R.generate(p, "creator"))]
-        calls += [(f"verifier at {s}", lambda s=s: R.generate(p, "verifier", {"prepared_size": s} | (vset or {})))
+        calls = [("decode", lambda: R.decode(p)), ("creator at 512", lambda: R.generate(p, "creator", common))]
+        calls += [(f"verifier at {s}", lambda s=s: R.generate(p, "verifier", (common or {}) | {"prepared_size": s} | (vset or {})))
                   for s in VERIFIER_SIZES]  # fmt: skip
         for label, call in calls:
             t0 = time.perf_counter()
@@ -220,13 +221,13 @@ def first(r: dict, n: int) -> dict:
     return r | {"codes": r["codes"][:n]}
 
 
-def positives(results, cc, vc, vs) -> tuple[dict, float]:
+def positives(results, cc, vc, vs, over=None) -> tuple[dict, float]:
     """{manipulation: [found, label right, pairs]}, and ms per match."""
     rates = collections.defaultdict(lambda: [0, 0, 0])
     n, t0 = 0, time.perf_counter()
     for res in results:
         for manip, v, c in res["pairs"]:
-            m = R.match(first(res["codes"][v][vs], vc), first(res["codes"][c]["creator"], cc))
+            m = R.match(first(res["codes"][v][vs], vc), first(res["codes"][c]["creator"], cc), over)
             found = m["relationship"] != "none"
             rates[manip][0] += found
             rates[manip][1] += found and m["relationship"] == EXPECTED.get(manip)
@@ -235,9 +236,10 @@ def positives(results, cc, vc, vs) -> tuple[dict, float]:
     return rates, (time.perf_counter() - t0) * 1000 / max(n, 1)
 
 
-def false_matches(pool, cc, vc, vs) -> tuple[int, int, list]:
+def false_matches(pool, cc, vc, vs, over=None) -> tuple[int, int, list]:
     """Every image's verifier codes against every other's creator codes, at once."""
-    s = R.DEFAULTS
+    recipe = int(pool[0]["codes"]["original"]["creator"]["recipe_version"].split(";")[0].rsplit("/", 1)[1])
+    s = R.settings_of({"recipe": recipe} | (over or {}))
     refs = [R.parse(first(p["codes"]["original"]["creator"], cc)) for p in pool]
     rc = np.concatenate([r[0] for r in refs])
     rg = np.concatenate([r[1] for r in refs])
@@ -273,6 +275,7 @@ def run(args) -> dict:
     unrelated = images_in(args.unrelated) if args.unrelated else []
     sets = sorted(d for d in args.lookalikes.iterdir() if d.is_dir()) if args.lookalikes else []
     vset = json.loads(args.verifier_settings) if args.verifier_settings else {}
+    common = {"recipe": args.recipe} if args.recipe != 1 else {}
     R.settings_of(vset)  # unknown settings fail here, not in the workers
     with ProcessPoolExecutor(args.workers) as ex:
         if args.modified:
@@ -280,26 +283,26 @@ def run(args) -> dict:
             for m in images_in(args.modified):
                 if "__" in m.stem:
                     by_stem[m.stem.split("__", 1)[0]].append(m)
-            results = list(ex.map(work_modified, [(p, by_stem[p.stem], vset) for p in originals]))
+            results = list(ex.map(work_modified, [(p, by_stem[p.stem], vset, common) for p in originals]))
         else:
             n = len(originals)
             bgs = [unrelated[i % len(unrelated)] if unrelated else (originals[(i + 1) % n] if n > 1 else None)
                    for i in range(n)]  # fmt: skip
-            results = list(ex.map(work_original, [(i, p, bgs[i], vset) for i, p in enumerate(originals)]))
-        plain = list(ex.map(work_plain, [(p, vset) for p in unrelated]))
-        looks = [list(ex.map(work_plain, [(p, vset) for p in images_in(d)])) for d in sets]
+            results = list(ex.map(work_original, [(i, p, bgs[i], vset, common) for i, p in enumerate(originals)]))
+        plain = list(ex.map(work_plain, [(p, vset, common) for p in unrelated]))
+        looks = [list(ex.map(work_plain, [(p, vset, common) for p in images_in(d)])) for d in sets]
     has_codes = lambda r: bool(r["codes"]["original"]["creator"]["codes"])  # noqa: E731
     pool = [r for r in results + plain if has_codes(r)]
     looks = [[r for r in rs if has_codes(r)] for rs in looks]
     report = {
-        "recipe": R.RECIPE, "date": date.today().isoformat(),
+        "recipe": f"image-simprints/{args.recipe}", "date": date.today().isoformat(),
         "environment": {"platform": platform.platform(), "python": platform.python_version(),
                         "opencv": cv2.__version__, "numpy": np.__version__, "pillow": Image.__version__},
         "inputs": {"originals": len(originals), "unrelated": len(unrelated), "modified": bool(args.modified),
                    "lookalike_sets": len(sets), "lookalike_images": sum(map(len, looks)),
                    "positive_pairs": sum(len(r["pairs"]) for r in results), "verifier_settings": vset,
                    "without_codes": [r["name"] for r in results + plain if not has_codes(r)]},
-        "timing_ms": timing(originals, vset),
+        "timing_ms": timing(originals, vset, common),
         "configs": [],
     }  # fmt: skip
     for cc, vc, vs in itertools.product(CREATOR_CODES, VERIFIER_CODES, VERIFIER_SIZES):
@@ -418,6 +421,7 @@ def main(argv=None) -> None:
     t.add_argument("--unrelated", type=Path, help="folder of images unrelated to the originals and each other")
     t.add_argument("--modified", type=Path, help="folder of modified copies named <original stem>__<label>.<ext>")
     t.add_argument("--lookalikes", type=Path, help="folder of subfolders, each a set of different photos by one photographer")
+    t.add_argument("--recipe", type=int, default=1, help="recipe for both sides (2: experimental)")
     t.add_argument("--verifier-settings", help="extra settings for the verifier only, as JSON, e.g. '{\"candidates\": 4096}'")
     t.add_argument("--out", type=Path, default=Path("report"), help="where report.json and summary.md go")
     t.add_argument("--workers", type=int, default=os.cpu_count())

@@ -8,6 +8,7 @@ research/granular_followup (followup.py: asymmetric queries, footprint check).
 import hashlib
 import io
 import math
+from functools import cache
 from importlib.resources import files
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from PIL import Image, ImageCms, ImageOps
 
 RECIPE = "image-simprints/1"
 DEFAULTS = {
+    "recipe": 1,  # 1: descriptors at octave 0, as the research; 2: at each keypoint's octave (experimental)
     "creator_codes": 20,  # codes a creator stores (top-K)
     "verifier_codes": 64,  # codes a verifier extracts (up to K)
     "tolerance_t": 24,  # Hamming distance at or below which two codes agree
@@ -34,39 +36,58 @@ SCALE_RANGE = (0.1, 10.0)  # plausible scale between two images of one picture
 CONTAINED = 0.95  # a footprint share at or above this counts as the whole image
 BACKGROUND = 255  # alpha is flattened onto white
 
-PROJECTION_SHA256 = "3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed"
+# Per recipe: its defaults where they differ from DEFAULTS, and its constants file.
+RECIPES = {
+    1: {"defaults": {}, "constants": "projection.f32",
+        "sha256": "3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed"},
+    2: {"defaults": {"tolerance_t": 32}, "constants": "projection_v2.f32",  # t fitted on tuning: scripts/fit_recipe_v2.py
+        "sha256": "eb70f802f0ec95e1b177abc3da4438144af276a0b34c2deed0ecf09ff8f96921"},
+}  # fmt: skip
 
 
 class ImageError(ValueError):
     """The source cannot be decoded, or is of an unsupported kind."""
 
 
-def _load_projection():
-    raw = files(__package__).joinpath("projection.f32").read_bytes()
-    if hashlib.sha256(raw).hexdigest() != PROJECTION_SHA256:
-        raise RuntimeError("projection.f32 does not match its checksum; reinstall image-simprints")
+@cache
+def projection(recipe: int) -> tuple[np.ndarray, np.ndarray]:
+    """(P, T) of a recipe, checked against its checksum, as exact int64 (x 2^40)."""
+    r = RECIPES[recipe]
+    raw = files(__package__).joinpath(r["constants"]).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != r["sha256"]:
+        raise RuntimeError(f"{r['constants']} does not match its checksum; reinstall image-simprints")
     v = np.frombuffer(raw, "<f4").astype(np.float64)
     # Every constant is a multiple of 2^-40, so this scaling is exact and the
     # projection below is exact integer arithmetic: the same bits on every platform.
     exact = (v * 2.0**40).astype(np.int64)
+    if not (exact == v * 2.0**40).all():
+        raise RuntimeError(f"{r['constants']} has a constant that is not a multiple of 2^-40")
     return exact[: 128 * 256].reshape(128, 256), exact[128 * 256 :]
 
 
-PROJECTION, THRESHOLDS = _load_projection()
+projection(1)  # checked on import
 _SRGB = ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB"))
 _DCT8 = 2.0 * np.cos(np.pi * np.outer(np.arange(8), 2 * np.arange(PATCH_SIDE) + 1) / (2 * PATCH_SIDE))
+
+
+def defaults_of(recipe: int) -> dict:
+    if recipe not in RECIPES:
+        raise ValueError(f"unknown recipe {recipe!r}; known: {sorted(RECIPES)}")
+    return DEFAULTS | {"recipe": recipe} | RECIPES[recipe]["defaults"]
 
 
 def settings_of(settings: dict | None) -> dict:
     unknown = set(settings or {}) - set(DEFAULTS)
     if unknown:
         raise ValueError(f"unknown settings: {sorted(unknown)}")
-    return DEFAULTS | (settings or {})
+    return defaults_of((settings or {}).get("recipe", 1)) | (settings or {})
 
 
 def version_of(s: dict) -> str:
-    """The recipe version: RECIPE, plus every setting that differs from its default."""
-    return ";".join([RECIPE, *(f"{k}={s[k]}" for k in DEFAULTS if s[k] != DEFAULTS[k])])
+    """The recipe version: image-simprints/<recipe>, plus every setting that differs
+    from that recipe's default."""
+    d = defaults_of(s["recipe"])
+    return ";".join([f"image-simprints/{s['recipe']}", *(f"{k}={s[k]}" for k in DEFAULTS if s[k] != d[k])])
 
 
 # --- decoding --------------------------------------------------------------------------
@@ -157,25 +178,31 @@ def generate(source, role: str, settings: dict | None = None) -> dict:
     if min(h, w) < MIN_SIDE:
         out["reason"] = f"too small: prepared image is {w}x{h}, needs {MIN_SIDE} px on each side"
         return out
-    rows = select(g, s["creator_codes" if role == "creator" else "verifier_codes"], s["sift_features"], s["candidates"])
+    k = s["creator_codes" if role == "creator" else "verifier_codes"]
+    rows, desc = select(g, k, s["sift_features"], s["candidates"], octave=s["recipe"] == 2)
     if not len(rows):
         out["reason"] = "no keypoints with enough detail"
         return out
     short = min(w, h)
-    for n, (code, (x, y, size, angle, _)) in enumerate(zip(codes_of(g, rows), rows, strict=True)):
+    codes = codes_of(g, rows, s["recipe"], desc)
+    for n, (code, (x, y, size, angle, _)) in enumerate(zip(codes, rows, strict=True)):
         out["codes"].append({"chunk_idx": n, "code": code, "x": round(float(x / w), 6), "y": round(float(y / h), 6),
                              "scale": round(float(size / short), 6), "angle": round(float(angle), 3)})  # fmt: skip
     return out
 
 
-def select(g: np.ndarray, k: int, sift_features=1500, candidates=512) -> np.ndarray:
+def select(g: np.ndarray, k: int, sift_features=1500, candidates=512, octave=False) -> tuple:
     """Up to k keypoints as rows (x, y, size, angle, response): the strongest, with
-    enough patch detail and a diameter of at least SIZE_FLOOR of the short side."""
-    kps = cv2.SIFT_create(nfeatures=sift_features).detect(g, None)
+    enough patch detail and a diameter of at least SIZE_FLOOR of the short side.
+    With octave (recipe 2), also their SIFT descriptors from the same call as the
+    detection, so each is computed at the octave the detector found it in."""
+    sift = cv2.SIFT_create(nfeatures=sift_features)
+    kps, desc = sift.detectAndCompute(g, None) if octave else (sift.detect(g, None), None)
     rows = np.array([(p.pt[0], p.pt[1], p.size, p.angle, p.response) for p in kps], np.float64).reshape(-1, 5)
-    rows = rows[np.lexsort((rows[:, 0], rows[:, 1], -rows[:, 4]))][:candidates]
-    rows = rows[_detail(g, rows) >= DETAIL_FLOOR]
-    return rows[rows[:, 2] >= SIZE_FLOOR * min(g.shape)][:k]
+    idx = np.lexsort((rows[:, 0], rows[:, 1], -rows[:, 4]))[:candidates]
+    idx = idx[_detail(g, rows[idx]) >= DETAIL_FLOOR]
+    idx = idx[rows[idx, 2] >= SIZE_FLOOR * min(g.shape)][:k]
+    return rows[idx], (desc[idx] if octave and len(idx) else None)
 
 
 def _detail(g: np.ndarray, rows: np.ndarray) -> np.ndarray:
@@ -204,14 +231,21 @@ def _detail(g: np.ndarray, rows: np.ndarray) -> np.ndarray:
     return out
 
 
-def codes_of(g: np.ndarray, rows: np.ndarray) -> list[str]:
-    """RootSIFT per keypoint, projected to 256 dimensions and thresholded: 64 hex chars."""
-    kp = [cv2.KeyPoint(float(x), float(y), float(s), float(a)) for x, y, s, a, _ in rows]
-    _, desc = cv2.SIFT_create().compute(g, kp)  # nfeatures only limits detection
-    desc = desc / (desc.sum(axis=1, keepdims=True) + np.float32(1e-7))  # float32 throughout
-    rootsift = np.clip(np.sqrt(desc) * np.float32(255), 0, 255).astype(np.uint8)
-    bits = rootsift.astype(np.int64) @ PROJECTION > THRESHOLDS
+def codes_of(g: np.ndarray, rows: np.ndarray, recipe=1, desc=None) -> list[str]:
+    """RootSIFT per keypoint, projected to 256 dimensions and thresholded: 64 hex chars.
+    Recipe 1 re-creates the keypoints from (x, y, size, angle), so every descriptor is
+    computed at octave 0, as the research did; recipe 2 passes the detector's own."""
+    if desc is None:
+        kp = [cv2.KeyPoint(float(x), float(y), float(s), float(a)) for x, y, s, a, _ in rows]
+        _, desc = cv2.SIFT_create().compute(g, kp)  # nfeatures only limits detection
+    p, t = projection(recipe)
+    bits = rootsift(desc).astype(np.int64) @ p > t
     return [b.tobytes().hex() for b in np.packbits(bits, axis=1)]
+
+
+def rootsift(desc: np.ndarray) -> np.ndarray:
+    desc = desc / (desc.sum(axis=1, keepdims=True) + np.float32(1e-7))  # float32 throughout
+    return np.clip(np.sqrt(desc) * np.float32(255), 0, 255).astype(np.uint8)
 
 
 # --- matching --------------------------------------------------------------------------
@@ -220,8 +254,8 @@ def codes_of(g: np.ndarray, rows: np.ndarray) -> list[str]:
 def parse(r: dict) -> tuple[np.ndarray, np.ndarray, tuple[float, float]]:
     """A generate() result -> (codes as (n, 4) uint64, geometry (x, y, size, angle) in
     short-side units, the image's (w, h) in short-side units)."""
-    if r.get("recipe_version", "").split(";")[0] != RECIPE:
-        raise ValueError(f"codes are from recipe {r.get('recipe_version')!r}, not {RECIPE!r}")
+    if r.get("recipe_version", "").split(";")[0] not in {f"image-simprints/{n}" for n in RECIPES}:
+        raise ValueError(f"codes are from an unknown recipe: {r.get('recipe_version')!r}")
     w, h = r["prepared_size"]
     short = min(w, h)
     c = r["codes"]
@@ -236,8 +270,12 @@ def hamming(q: np.ndarray, r: np.ndarray) -> np.ndarray:
 
 def match(verifier_codes: dict, candidate_codes: dict, settings: dict | None = None) -> dict:
     """How the verifier's image relates to the candidate's, from their codes."""
-    s = settings_of(settings)
     cq, gq, size_q = parse(verifier_codes)
+    recipes = {r["recipe_version"].split(";")[0].rsplit("/", 1)[1] for r in (verifier_codes, candidate_codes)}
+    recipes |= {str(settings["recipe"])} if settings and "recipe" in settings else set()
+    if len(recipes) > 1:
+        raise ValueError(f"cannot match codes of different recipes: {sorted(recipes)}")
+    s = settings_of({"recipe": int(recipes.pop())} | (settings or {}))
     cr, gr, size_r = parse(candidate_codes)
     qi, rj = np.nonzero(hamming(cq, cr) <= s["tolerance_t"])
     best, members = votes(qi, rj, np.zeros(len(cr), int), gq, gr, 1)

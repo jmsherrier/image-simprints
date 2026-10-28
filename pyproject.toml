@@ -24,4 +24,4 @@ test = ["pytest==9.2.0"]
 image-simprints = "image_simprints.testmode:main"
 
 [tool.setuptools.package-data]
-image_simprints = ["projection.f32"]
+image_simprints = ["*.f32"]
