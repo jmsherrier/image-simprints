@@ -28,31 +28,32 @@
    "unrelated/u0746.jpg",
    "unrelated/u0820.jpg",
    "unrelated/u0840.jpg"
-  ]
+  ],
+  "timing_note": "timing re-measured alone in one process after the run; the in-run timing overlapped other load on the machine"
  },
  "timing_ms": {
   "decode": {
-   "mean": 26.0,
-   "median": 26.0,
-   "p95": 53.9,
+   "mean": 25.0,
+   "median": 25.7,
+   "p95": 54.1,
    "images": 150
   },
   "creator at 512": {
-   "mean": 84.2,
-   "median": 83.0,
-   "p95": 135.3,
+   "mean": 79.3,
+   "median": 82.7,
+   "p95": 115.6,
    "images": 150
   },
   "verifier at 512": {
-   "mean": 85.9,
-   "median": 85.8,
-   "p95": 127.2,
+   "mean": 82.1,
+   "median": 84.4,
+   "p95": 118.9,
    "images": 150
   },
   "verifier at 1024": {
-   "mean": 136.2,
-   "median": 133.0,
-   "p95": 191.1,
+   "mean": 129.4,
+   "median": 129.7,
+   "p95": 167.7,
    "images": 150
   }
  },
@@ -62,18 +63,18 @@
    "verifier_codes": 32,
    "verifier_prepared_size": 512,
    "default": false,
-   "found": 0.536,
-   "label_correct": 0.5187,
+   "found": 0.548,
+   "label_correct": 0.5469,
    "per_manipulation": {
     "avif50": {
-     "found": 0.9467,
-     "label_correct": 0.92,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "bright_contrast": {
-     "found": 0.96,
-     "label_correct": 0.94,
+     "found": 0.9667,
+     "label_correct": 0.96,
      "pairs": 150,
      "expected": "identical"
     },
@@ -150,20 +151,20 @@
      "expected": "contained_in"
     },
     "greyscale": {
-     "found": 0.8533,
-     "label_correct": 0.74,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "identical": {
-     "found": 0.9133,
-     "label_correct": 0.82,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "jpeg60": {
-     "found": 0.96,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -180,8 +181,8 @@
      "expected": "overlapping"
     },
     "overlap50": {
-     "found": 0.6133,
-     "label_correct": 0.5533,
+     "found": 0.6267,
+     "label_correct": 0.6267,
      "pairs": 150,
      "expected": "overlapping"
     },
@@ -192,8 +193,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.9333,
-     "label_correct": 0.8933,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -210,13 +211,13 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.9533,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     }
    },
-   "false_matches": 36,
+   "false_matches": 38,
    "unrelated_pairs": 1296182,
    "false_match_pairs": [
     [
@@ -293,6 +294,10 @@
     ],
     [
      "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
      "unrelated/u0728.jpg"
     ],
     [
@@ -310,6 +315,10 @@
     [
      "unrelated/u0641.jpg",
      "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
     ],
     [
      "unrelated/u0727.jpg",
@@ -364,7 +373,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.181,
+   "ms_per_match": 0.297,
    "lookalike_false_matches": 4,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -391,12 +400,12 @@
    "verifier_codes": 32,
    "verifier_prepared_size": 1024,
    "default": false,
-   "found": 0.3811,
-   "label_correct": 0.3787,
+   "found": 0.3816,
+   "label_correct": 0.3795,
    "per_manipulation": {
     "avif50": {
-     "found": 0.6933,
-     "label_correct": 0.6933,
+     "found": 0.7,
+     "label_correct": 0.7,
      "pairs": 150,
      "expected": "identical"
     },
@@ -492,7 +501,7 @@
     },
     "jpeg60": {
      "found": 0.6933,
-     "label_correct": 0.6867,
+     "label_correct": 0.6933,
      "pairs": 150,
      "expected": "identical"
     },
@@ -539,8 +548,8 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.7133,
-     "label_correct": 0.7133,
+     "found": 0.72,
+     "label_correct": 0.72,
      "pairs": 150,
      "expected": "identical"
     }
@@ -653,7 +662,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.141,
+   "ms_per_match": 0.24,
    "lookalike_false_matches": 0,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": []
@@ -663,18 +672,18 @@
    "verifier_codes": 64,
    "verifier_prepared_size": 512,
    "default": false,
-   "found": 0.5389,
-   "label_correct": 0.5216,
+   "found": 0.5509,
+   "label_correct": 0.5499,
    "per_manipulation": {
     "avif50": {
-     "found": 0.9467,
-     "label_correct": 0.92,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "bright_contrast": {
-     "found": 0.96,
-     "label_correct": 0.94,
+     "found": 0.9667,
+     "label_correct": 0.96,
      "pairs": 150,
      "expected": "identical"
     },
@@ -751,20 +760,20 @@
      "expected": "contained_in"
     },
     "greyscale": {
-     "found": 0.8533,
-     "label_correct": 0.74,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "identical": {
-     "found": 0.9133,
-     "label_correct": 0.82,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "jpeg60": {
-     "found": 0.96,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -781,8 +790,8 @@
      "expected": "overlapping"
     },
     "overlap50": {
-     "found": 0.6333,
-     "label_correct": 0.5733,
+     "found": 0.6467,
+     "label_correct": 0.6467,
      "pairs": 150,
      "expected": "overlapping"
     },
@@ -793,8 +802,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.9333,
-     "label_correct": 0.8933,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -811,13 +820,13 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.9533,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     }
    },
-   "false_matches": 36,
+   "false_matches": 38,
    "unrelated_pairs": 1296182,
    "false_match_pairs": [
     [
@@ -894,6 +903,10 @@
     ],
     [
      "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
      "unrelated/u0728.jpg"
     ],
     [
@@ -911,6 +924,10 @@
     [
      "unrelated/u0641.jpg",
      "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
     ],
     [
      "unrelated/u0727.jpg",
@@ -965,7 +982,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.204,
+   "ms_per_match": 0.337,
    "lookalike_false_matches": 4,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -992,12 +1009,12 @@
    "verifier_codes": 64,
    "verifier_prepared_size": 1024,
    "default": false,
-   "found": 0.3843,
-   "label_correct": 0.3819,
+   "found": 0.3848,
+   "label_correct": 0.3827,
    "per_manipulation": {
     "avif50": {
-     "found": 0.6933,
-     "label_correct": 0.6933,
+     "found": 0.7,
+     "label_correct": 0.7,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1093,7 +1110,7 @@
     },
     "jpeg60": {
      "found": 0.6933,
-     "label_correct": 0.6867,
+     "label_correct": 0.6933,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1140,8 +1157,8 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.7133,
-     "label_correct": 0.7133,
+     "found": 0.72,
+     "label_correct": 0.72,
      "pairs": 150,
      "expected": "identical"
     }
@@ -1254,7 +1271,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.157,
+   "ms_per_match": 0.259,
    "lookalike_false_matches": 0,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": []
@@ -1264,18 +1281,18 @@
    "verifier_codes": 32,
    "verifier_prepared_size": 512,
    "default": false,
-   "found": 0.6155,
-   "label_correct": 0.6,
+   "found": 0.6251,
+   "label_correct": 0.6248,
    "per_manipulation": {
     "avif50": {
-     "found": 0.9533,
-     "label_correct": 0.92,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "bright_contrast": {
-     "found": 0.9667,
-     "label_correct": 0.9467,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1352,20 +1369,20 @@
      "expected": "contained_in"
     },
     "greyscale": {
-     "found": 0.8933,
-     "label_correct": 0.82,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "identical": {
-     "found": 0.9133,
-     "label_correct": 0.8133,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "jpeg60": {
-     "found": 0.9533,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1377,13 +1394,13 @@
     },
     "overlap30": {
      "found": 0.46,
-     "label_correct": 0.4533,
+     "label_correct": 0.46,
      "pairs": 150,
      "expected": "overlapping"
     },
     "overlap50": {
-     "found": 0.7733,
-     "label_correct": 0.7267,
+     "found": 0.78,
+     "label_correct": 0.78,
      "pairs": 150,
      "expected": "overlapping"
     },
@@ -1394,8 +1411,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.9533,
-     "label_correct": 0.9,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1412,8 +1429,8 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.9467,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     }
@@ -1614,7 +1631,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.209,
+   "ms_per_match": 0.359,
    "lookalike_false_matches": 4,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -1641,8 +1658,8 @@
    "verifier_codes": 32,
    "verifier_prepared_size": 1024,
    "default": false,
-   "found": 0.4651,
-   "label_correct": 0.4635,
+   "found": 0.4653,
+   "label_correct": 0.4643,
    "per_manipulation": {
     "avif50": {
      "found": 0.7533,
@@ -1682,7 +1699,7 @@
     },
     "collage50": {
      "found": 0.6733,
-     "label_correct": 0.6667,
+     "label_correct": 0.6733,
      "pairs": 150,
      "expected": "contains"
     },
@@ -1742,7 +1759,7 @@
     },
     "jpeg60": {
      "found": 0.76,
-     "label_correct": 0.7533,
+     "label_correct": 0.76,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1771,8 +1788,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.94,
-     "label_correct": 0.9333,
+     "found": 0.9467,
+     "label_correct": 0.94,
      "pairs": 150,
      "expected": "identical"
     },
@@ -1931,7 +1948,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.174,
+   "ms_per_match": 0.288,
    "lookalike_false_matches": 2,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -1950,18 +1967,18 @@
    "verifier_codes": 64,
    "verifier_prepared_size": 512,
    "default": true,
-   "found": 0.6237,
-   "label_correct": 0.608,
+   "found": 0.6333,
+   "label_correct": 0.6331,
    "per_manipulation": {
     "avif50": {
-     "found": 0.9533,
-     "label_correct": 0.92,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "bright_contrast": {
-     "found": 0.9667,
-     "label_correct": 0.9467,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2038,20 +2055,20 @@
      "expected": "contained_in"
     },
     "greyscale": {
-     "found": 0.8933,
-     "label_correct": 0.82,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "identical": {
-     "found": 0.9133,
-     "label_correct": 0.8133,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "jpeg60": {
-     "found": 0.9533,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2063,13 +2080,13 @@
     },
     "overlap30": {
      "found": 0.4867,
-     "label_correct": 0.48,
+     "label_correct": 0.4867,
      "pairs": 150,
      "expected": "overlapping"
     },
     "overlap50": {
-     "found": 0.8067,
-     "label_correct": 0.7533,
+     "found": 0.8133,
+     "label_correct": 0.8133,
      "pairs": 150,
      "expected": "overlapping"
     },
@@ -2080,8 +2097,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.9533,
-     "label_correct": 0.9,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2098,8 +2115,8 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.9467,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     }
@@ -2300,7 +2317,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.243,
+   "ms_per_match": 0.412,
    "lookalike_false_matches": 4,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -2327,8 +2344,8 @@
    "verifier_codes": 64,
    "verifier_prepared_size": 1024,
    "default": false,
-   "found": 0.4707,
-   "label_correct": 0.4691,
+   "found": 0.4709,
+   "label_correct": 0.4699,
    "per_manipulation": {
     "avif50": {
      "found": 0.7533,
@@ -2368,7 +2385,7 @@
     },
     "collage50": {
      "found": 0.6933,
-     "label_correct": 0.6867,
+     "label_correct": 0.6933,
      "pairs": 150,
      "expected": "contains"
     },
@@ -2428,7 +2445,7 @@
     },
     "jpeg60": {
      "found": 0.76,
-     "label_correct": 0.7533,
+     "label_correct": 0.76,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2457,8 +2474,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.94,
-     "label_correct": 0.9333,
+     "found": 0.9467,
+     "label_correct": 0.94,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2617,7 +2634,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.192,
+   "ms_per_match": 0.374,
    "lookalike_false_matches": 2,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -2636,18 +2653,18 @@
    "verifier_codes": 32,
    "verifier_prepared_size": 512,
    "default": false,
-   "found": 0.6544,
-   "label_correct": 0.6373,
+   "found": 0.664,
+   "label_correct": 0.664,
    "per_manipulation": {
     "avif50": {
-     "found": 0.94,
-     "label_correct": 0.9133,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "bright_contrast": {
-     "found": 0.9667,
-     "label_correct": 0.9333,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2724,20 +2741,20 @@
      "expected": "contained_in"
     },
     "greyscale": {
-     "found": 0.8867,
-     "label_correct": 0.7867,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "identical": {
-     "found": 0.92,
-     "label_correct": 0.7933,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "jpeg60": {
-     "found": 0.96,
-     "label_correct": 0.94,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2754,8 +2771,8 @@
      "expected": "overlapping"
     },
     "overlap50": {
-     "found": 0.7933,
-     "label_correct": 0.7267,
+     "found": 0.8,
+     "label_correct": 0.8,
      "pairs": 150,
      "expected": "overlapping"
     },
@@ -2766,8 +2783,8 @@
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.94,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -2784,8 +2801,8 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.9667,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     }
@@ -3006,7 +3023,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.268,
+   "ms_per_match": 0.438,
    "lookalike_false_matches": 4,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -3034,7 +3051,7 @@
    "verifier_prepared_size": 1024,
    "default": false,
    "found": 0.4981,
-   "label_correct": 0.4968,
+   "label_correct": 0.4973,
    "per_manipulation": {
     "avif50": {
      "found": 0.76,
@@ -3074,7 +3091,7 @@
     },
     "collage50": {
      "found": 0.6867,
-     "label_correct": 0.68,
+     "label_correct": 0.6867,
      "pairs": 150,
      "expected": "contains"
     },
@@ -3176,7 +3193,7 @@
     },
     "rotate90": {
      "found": 0.76,
-     "label_correct": 0.7533,
+     "label_correct": 0.76,
      "pairs": 150,
      "expected": "identical"
     },
@@ -3335,7 +3352,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.225,
+   "ms_per_match": 0.418,
    "lookalike_false_matches": 2,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -3354,18 +3371,18 @@
    "verifier_codes": 64,
    "verifier_prepared_size": 512,
    "default": false,
-   "found": 0.6768,
-   "label_correct": 0.6576,
+   "found": 0.6877,
+   "label_correct": 0.6875,
    "per_manipulation": {
     "avif50": {
-     "found": 0.9467,
-     "label_correct": 0.9267,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "bright_contrast": {
      "found": 0.9733,
-     "label_correct": 0.9467,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -3442,20 +3459,20 @@
      "expected": "contained_in"
     },
     "greyscale": {
-     "found": 0.8933,
-     "label_correct": 0.7667,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "identical": {
-     "found": 0.9133,
-     "label_correct": 0.76,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
     "jpeg60": {
-     "found": 0.94,
-     "label_correct": 0.9133,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -3472,20 +3489,20 @@
      "expected": "overlapping"
     },
     "overlap50": {
-     "found": 0.8267,
-     "label_correct": 0.7333,
+     "found": 0.8333,
+     "label_correct": 0.8333,
      "pairs": 150,
      "expected": "overlapping"
     },
     "resize25": {
-     "found": 0.9467,
-     "label_correct": 0.9467,
+     "found": 0.9533,
+     "label_correct": 0.9533,
      "pairs": 150,
      "expected": "identical"
     },
     "resize50": {
-     "found": 0.9333,
-     "label_correct": 0.92,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     },
@@ -3502,8 +3519,8 @@
      "expected": "identical"
     },
     "webp60": {
-     "found": 0.9533,
-     "label_correct": 0.94,
+     "found": 0.9733,
+     "label_correct": 0.9733,
      "pairs": 150,
      "expected": "identical"
     }
@@ -3728,7 +3745,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.327,
+   "ms_per_match": 0.518,
    "lookalike_false_matches": 4,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [
@@ -3755,8 +3772,8 @@
    "verifier_codes": 64,
    "verifier_prepared_size": 1024,
    "default": false,
-   "found": 0.5184,
-   "label_correct": 0.5171,
+   "found": 0.5187,
+   "label_correct": 0.5176,
    "per_manipulation": {
     "avif50": {
      "found": 0.76,
@@ -3874,13 +3891,13 @@
     },
     "overlap50": {
      "found": 0.7267,
-     "label_correct": 0.7133,
+     "label_correct": 0.72,
      "pairs": 150,
      "expected": "overlapping"
     },
     "resize25": {
-     "found": 0.9467,
-     "label_correct": 0.9467,
+     "found": 0.9533,
+     "label_correct": 0.9533,
      "pairs": 150,
      "expected": "identical"
     },
@@ -4061,7 +4078,7 @@
      "unrelated/u0963.jpg"
     ]
    ],
-   "ms_per_match": 0.344,
+   "ms_per_match": 0.391,
    "lookalike_false_matches": 2,
    "lookalike_pairs": 784,
    "lookalike_false_match_pairs": [

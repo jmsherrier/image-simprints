@@ -87,9 +87,12 @@ match, so you can drop owners with only one code hit before calling `match`.
 - **Threads**: `generate` and `match` keep no state between calls and are safe
   in threads and in long-lived processes. They are CPU-bound, so use a process
   pool for throughput.
-- **Cost**: `generate` takes a few hundred ms per image, mostly decoding and
-  SIFT, and more for very large files. `match` takes about 1–2 ms per pair.
-  `image-simprints test` measures both on your hardware.
+- **Cost**: on 1280 px JPEGs, `generate` takes about 85 ms per image at 512 px
+  (decoding is about 25 ms of that) and about 130 ms at 1024 px, in one process
+  on a desktop CPU. Larger files take longer to decode. `match` takes about
+  0.25 ms per pair. `image-simprints test` measures both on your hardware.
+- **Verifier size**: keep the verifier at `prepared_size` 512, the same as the
+  creator. At 1024 px it finds fewer matches (see `tests/corpus/report`).
 - **Errors**: unreadable, truncated or unsupported files raise `ImageError`, a
   subclass of `ValueError`. A missing path raises `FileNotFoundError`. A wrong
   source type raises `TypeError`. Bad settings, an unknown role, or codes from

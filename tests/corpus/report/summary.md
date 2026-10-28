@@ -6,25 +6,25 @@ Recipe `image-simprints/1`; 150 originals, 1000 unrelated images, 205 look-alike
 
 | creator codes | verifier codes | verifier size | found | label correct | false matches | look-alike false matches | ms per match |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 10 | 32 | 512 | 53.6% | 51.9% | 36 of 1,296,182 | 4 of 784 | 0.181 |
-| 10 | 32 | 1024 | 38.1% | 37.9% | 26 of 1,296,182 | 0 of 784 | 0.141 |
-| 10 | 64 | 512 | 53.9% | 52.2% | 36 of 1,296,182 | 4 of 784 | 0.204 |
-| 10 | 64 | 1024 | 38.4% | 38.2% | 26 of 1,296,182 | 0 of 784 | 0.157 |
-| 20 | 32 | 512 | 61.6% | 60.0% | 48 of 1,296,182 | 4 of 784 | 0.209 |
-| 20 | 32 | 1024 | 46.5% | 46.4% | 33 of 1,296,182 | 2 of 784 | 0.174 |
-| 20 (default) | 64 | 512 | 62.4% | 60.8% | 48 of 1,296,182 | 4 of 784 | 0.243 |
-| 20 | 64 | 1024 | 47.1% | 46.9% | 33 of 1,296,182 | 2 of 784 | 0.192 |
-| 50 | 32 | 512 | 65.4% | 63.7% | 53 of 1,296,182 | 4 of 784 | 0.268 |
-| 50 | 32 | 1024 | 49.8% | 49.7% | 36 of 1,296,182 | 2 of 784 | 0.225 |
-| 50 | 64 | 512 | 67.7% | 65.8% | 54 of 1,296,182 | 4 of 784 | 0.327 |
-| 50 | 64 | 1024 | 51.8% | 51.7% | 37 of 1,296,182 | 2 of 784 | 0.344 |
+| 10 | 32 | 512 | 54.8% | 54.7% | 38 of 1,296,182 | 4 of 784 | 0.297 |
+| 10 | 32 | 1024 | 38.2% | 38.0% | 26 of 1,296,182 | 0 of 784 | 0.24 |
+| 10 | 64 | 512 | 55.1% | 55.0% | 38 of 1,296,182 | 4 of 784 | 0.337 |
+| 10 | 64 | 1024 | 38.5% | 38.3% | 26 of 1,296,182 | 0 of 784 | 0.259 |
+| 20 | 32 | 512 | 62.5% | 62.5% | 48 of 1,296,182 | 4 of 784 | 0.359 |
+| 20 | 32 | 1024 | 46.5% | 46.4% | 33 of 1,296,182 | 2 of 784 | 0.288 |
+| 20 (default) | 64 | 512 | 63.3% | 63.3% | 48 of 1,296,182 | 4 of 784 | 0.412 |
+| 20 | 64 | 1024 | 47.1% | 47.0% | 33 of 1,296,182 | 2 of 784 | 0.374 |
+| 50 | 32 | 512 | 66.4% | 66.4% | 53 of 1,296,182 | 4 of 784 | 0.438 |
+| 50 | 32 | 1024 | 49.8% | 49.7% | 36 of 1,296,182 | 2 of 784 | 0.418 |
+| 50 | 64 | 512 | 68.8% | 68.8% | 54 of 1,296,182 | 4 of 784 | 0.518 |
+| 50 | 64 | 1024 | 51.9% | 51.8% | 37 of 1,296,182 | 2 of 784 | 0.391 |
 
 ## Per manipulation, default settings
 
 | manipulation | expected | found | label correct | pairs |
 | --- | --- | --- | --- | --- |
-| avif50 | identical | 95% | 92% | 150 |
-| bright_contrast | identical | 97% | 95% | 150 |
+| avif50 | identical | 97% | 97% | 150 |
+| bright_contrast | identical | 97% | 97% | 150 |
 | collage15 | contains | 4% | 4% | 150 |
 | collage15 reversed | contained_in | 1% | 1% | 150 |
 | collage30 | contains | 36% | 36% | 150 |
@@ -37,24 +37,24 @@ Recipe `image-simprints/1`; 150 originals, 1000 unrelated images, 205 look-alike
 | crop50 | contained_in | 75% | 75% | 150 |
 | crop70 | contained_in | 89% | 89% | 150 |
 | crop90 | contained_in | 96% | 96% | 150 |
-| greyscale | identical | 89% | 82% | 150 |
-| identical | identical | 91% | 81% | 150 |
-| jpeg60 | identical | 95% | 93% | 150 |
+| greyscale | identical | 97% | 97% | 150 |
+| identical | identical | 97% | 97% | 150 |
+| jpeg60 | identical | 97% | 97% | 150 |
 | overlap15 | overlapping | 11% | 11% | 150 |
-| overlap30 | overlapping | 49% | 48% | 150 |
-| overlap50 | overlapping | 81% | 75% | 150 |
+| overlap30 | overlapping | 49% | 49% | 150 |
+| overlap50 | overlapping | 81% | 81% | 150 |
 | resize25 | identical | 94% | 94% | 150 |
-| resize50 | identical | 95% | 90% | 150 |
+| resize50 | identical | 97% | 97% | 150 |
 | rotate15 | contained_in | 84% | 84% | 150 |
 | rotate90 | identical | 97% | 97% | 150 |
-| webp60 | identical | 95% | 93% | 150 |
+| webp60 | identical | 97% | 97% | 150 |
 
 ## Time per original (one process, decoding included)
 
-- decode: mean 26.0 ms, median 26.0 ms, p95 53.9 ms (150 images)
-- creator at 512: mean 84.2 ms, median 83.0 ms, p95 135.3 ms (150 images)
-- verifier at 512: mean 85.9 ms, median 85.8 ms, p95 127.2 ms (150 images)
-- verifier at 1024: mean 136.2 ms, median 133.0 ms, p95 191.1 ms (150 images)
+- decode: mean 25.0 ms, median 25.7 ms, p95 54.1 ms (150 images)
+- creator at 512: mean 79.3 ms, median 82.7 ms, p95 115.6 ms (150 images)
+- verifier at 512: mean 82.1 ms, median 84.4 ms, p95 118.9 ms (150 images)
+- verifier at 1024: mean 129.4 ms, median 129.7 ms, p95 167.7 ms (150 images)
 
 ## False matches, default settings (verifier, candidate)
 
