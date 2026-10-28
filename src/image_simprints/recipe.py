@@ -23,10 +23,10 @@ DEFAULTS = {
     "min_votes": 2,  # agreeing codes needed on one transform
     "prepared_size": 512,  # longer side of the prepared image, never upscaled
     "span_check": 0.05,  # spread of the agreeing verifier keypoints, see _judge
+    "sift_features": 1500,  # SIFT keeps this many strongest keypoints (0: all)
+    "candidates": 512,  # strongest keypoints considered before the floors
 }
 MIN_SIDE = 32  # a prepared image shorter than this on either side gets no codes
-CANDIDATES = 512  # strongest keypoints considered
-SIFT_FEATURES = 1500
 SIZE_FLOOR = 0.02  # keypoint diameter, as a share of the short side
 DETAIL_FLOOR = 200.0  # patch detail (#064 in bakau), see _detail
 PATCH_SIDE, PATCH_FACTOR = 32, 2.0
@@ -157,7 +157,7 @@ def generate(source, role: str, settings: dict | None = None) -> dict:
     if min(h, w) < MIN_SIDE:
         out["reason"] = f"too small: prepared image is {w}x{h}, needs {MIN_SIDE} px on each side"
         return out
-    rows = select(g, s["creator_codes" if role == "creator" else "verifier_codes"])
+    rows = select(g, s["creator_codes" if role == "creator" else "verifier_codes"], s["sift_features"], s["candidates"])
     if not len(rows):
         out["reason"] = "no keypoints with enough detail"
         return out
@@ -168,12 +168,12 @@ def generate(source, role: str, settings: dict | None = None) -> dict:
     return out
 
 
-def select(g: np.ndarray, k: int) -> np.ndarray:
+def select(g: np.ndarray, k: int, sift_features=1500, candidates=512) -> np.ndarray:
     """Up to k keypoints as rows (x, y, size, angle, response): the strongest, with
     enough patch detail and a diameter of at least SIZE_FLOOR of the short side."""
-    kps = cv2.SIFT_create(nfeatures=SIFT_FEATURES).detect(g, None)
+    kps = cv2.SIFT_create(nfeatures=sift_features).detect(g, None)
     rows = np.array([(p.pt[0], p.pt[1], p.size, p.angle, p.response) for p in kps], np.float64).reshape(-1, 5)
-    rows = rows[np.lexsort((rows[:, 0], rows[:, 1], -rows[:, 4]))][:CANDIDATES]
+    rows = rows[np.lexsort((rows[:, 0], rows[:, 1], -rows[:, 4]))][:candidates]
     rows = rows[_detail(g, rows) >= DETAIL_FLOOR]
     return rows[rows[:, 2] >= SIZE_FLOOR * min(g.shape)][:k]
 
@@ -207,7 +207,7 @@ def _detail(g: np.ndarray, rows: np.ndarray) -> np.ndarray:
 def codes_of(g: np.ndarray, rows: np.ndarray) -> list[str]:
     """RootSIFT per keypoint, projected to 256 dimensions and thresholded: 64 hex chars."""
     kp = [cv2.KeyPoint(float(x), float(y), float(s), float(a)) for x, y, s, a, _ in rows]
-    _, desc = cv2.SIFT_create(nfeatures=SIFT_FEATURES).compute(g, kp)
+    _, desc = cv2.SIFT_create().compute(g, kp)  # nfeatures only limits detection
     desc = desc / (desc.sum(axis=1, keepdims=True) + np.float32(1e-7))  # float32 throughout
     rootsift = np.clip(np.sqrt(desc) * np.float32(255), 0, 255).astype(np.uint8)
     bits = rootsift.astype(np.int64) @ PROJECTION > THRESHOLDS
