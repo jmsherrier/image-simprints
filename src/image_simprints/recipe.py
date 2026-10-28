@@ -258,10 +258,33 @@ def parse(r: dict) -> tuple[np.ndarray, np.ndarray, tuple[float, float]]:
         raise ValueError(f"codes are from an unknown recipe: {r.get('recipe_version')!r}")
     w, h = r["prepared_size"]
     short = min(w, h)
-    c = r["codes"]
+    c = [x for x in r["codes"] if not x.get("stop")]  # see mark_stop_codes
     codes = np.array([np.frombuffer(bytes.fromhex(x["code"]), ">u8") for x in c], np.uint64).reshape(-1, 4)
     geo = np.array([(x["x"] * w / short, x["y"] * h / short, x["scale"], x["angle"]) for x in c]).reshape(-1, 4)
     return codes, geo, (w / short, h / short)
+
+
+def mark_stop_codes(simprints: list[dict], n: int, settings: dict | None = None, against: list[dict] | None = None):
+    """Copies of stored generate() results with "stop": True on each code that agrees
+    (within tolerance_t) with codes of more than n other declarations in `against`
+    (default: the same list). match() ignores marked codes: a guard against hub
+    images, as stop words are ignored in text search. An index-side option."""
+    against = simprints if against is None else against
+    s = settings_of(settings)
+    codes = [parse(r)[0] for r in against]
+    if not codes:
+        return list(simprints)
+    every = np.concatenate(codes)
+    owner = np.repeat(np.arange(len(codes)), [len(c) for c in codes])
+    out = []
+    for r in simprints:
+        mine = parse(r)[0]
+        own = next((i for i, x in enumerate(against) if x is r), -1)
+        near = hamming(mine, every) <= s["tolerance_t"] if len(mine) else np.zeros((0, len(every)), bool)
+        hub = [len(set(owner[row].tolist()) - {own}) > n for row in near]
+        kept = iter(hub)
+        out.append(r | {"codes": [c | {"stop": True} if not c.get("stop") and next(kept) else c for c in r["codes"]]})
+    return out
 
 
 def hamming(q: np.ndarray, r: np.ndarray) -> np.ndarray:

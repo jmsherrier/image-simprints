@@ -130,6 +130,15 @@ def test_animated_uses_first_frame():
 # --- end to end --------------------------------------------------------------------------
 
 
+def test_stop_codes_are_ignored():
+    a = s.generate(SHAPES, "creator")
+    b = s.generate(V / "portrait.png", "creator")
+    marked = R.mark_stop_codes([a, a | {}, b], 0)  # a's codes agree with one other declaration: its copy
+    assert [sum(c.get("stop", False) for c in m["codes"]) for m in marked] == [20, 20, 0]
+    assert s.match(s.generate(SHAPES, "verifier"), marked[0])["relationship"] == "none"
+    assert R.mark_stop_codes([a, a | {}, b], 1)[0] == a  # one other is not more than one
+
+
 def test_footprint_of_a_near_identity():
     """OpenCV's intersectConvexConvex gives 0 here; an identical image produces this."""
     t = np.array([[0.999994738, -3.16392224e-06, 1.10472135e-06], [3.16392224e-06, 0.999994738, 9.61883005e-07],

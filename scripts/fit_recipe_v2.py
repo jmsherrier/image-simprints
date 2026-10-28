@@ -17,6 +17,7 @@ are the same photograph (known duplicates) are listed so they can be set aside.
 """
 
 import csv
+import json
 import random
 import sys
 from concurrent.futures import ProcessPoolExecutor
@@ -31,11 +32,17 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "corpus"
 OUT = ROOT / "src" / "image_simprints" / "projection_v2.f32"
 GRID = (12, 16, 20, 24, 28, 32, 36, 40, 48)
+STOP_N = (1, 2, 3, 5, 10)  # the hub guard: ignore stored codes agreeing with more than N other photos
 
 
-def tuning(role: str) -> list[Path]:
+def tuning(role: str, splits=("tuning",)) -> list[Path]:
     with (ROOT / "tests" / "corpus" / "manifest.csv").open(encoding="utf-8") as f:
-        return [CACHE / r["path"] for r in csv.DictReader(f) if r["split"] == "tuning" and r["role"] == role]
+        return [CACHE / r["path"] for r in csv.DictReader(f) if r["split"] in splits and r["role"] == role]
+
+
+def key(name: str) -> str:
+    """"unrelated/u057.jpg:crop50" -> "unrelated/u057": one photo, whatever was made of it."""
+    return name.split(":")[0].rsplit(".", 1)[0]
 
 
 def rootsift_of(path: Path) -> np.ndarray:
@@ -57,50 +64,55 @@ def thresholds() -> None:
 
 
 def tolerance(recipe: int) -> None:
-    originals, unrelated = tuning("original"), tuning("unrelated")
+    # The negatives include the 1,000 extra Pixabay photos ("tuning-extra"), so that a
+    # false-match rate near one in a million pairs shows; T stays as fitted on "tuning".
+    originals, unrelated = tuning("original"), tuning("unrelated", ("tuning", "tuning-extra"))
     common = {"recipe": recipe} if recipe != 1 else {}
     bgs = [unrelated[i % len(unrelated)] for i in range(len(originals))]
     with ProcessPoolExecutor() as ex:
         results = list(ex.map(T.work_original, [(i, p, bgs[i], {}, common) for i, p in enumerate(originals)]))
         plain = list(ex.map(T.work_plain, [(p, {}, common) for p in unrelated]))
-    pool = [r for r in results + plain if r["codes"]["original"]["creator"]["codes"]]
-    # The research's negatives too: every derived image with no photometric edit or rotation
-    # (identical, crops, collages, second overlap crops) against every unrelated photo, both
-    # ways, a collage never against its own background (granular_bench/bench.py).
-    derived = [(f"{res['name']}:{n}", res["codes"][n], bgs[i].stem if n.startswith("collage") else None)
-               for i, res in enumerate(results)
-               for n in res["codes"] if n == "identical" or n.startswith(("crop", "collage"))
-               or (n.startswith("overlap") and not n.endswith("first"))]  # fmt: skip
-    unrel = [(f"unrelated/{r['name'].split('/')[-1]}", r["codes"]["original"], None) for r in plain]
-    print(f"recipe {recipe}: {sum(len(r['pairs']) for r in results)} positives; {len(pool)} photos in the pool "
-          f"({len(pool) * (len(pool) - 1)} ordered pairs); {2 * len(derived) * len(unrel)} derived/unrelated pairs")
-    print("| t | positives found | false matches, pool | false matches, derived/unrelated | genuine (same picture set aside) | genuine pairs |")
-    print("| --- | --- | --- | --- | --- | --- |")
-    for t in GRID:
-        rates, _ = T.positives(results, 20, 64, 512, {"tolerance_t": t})
+    combos = [(t, None) for t in GRID] + ([(t, n) for t in GRID if t >= 24 for n in STOP_N] if recipe == 2 else [])
+    log = []
+    print(f"recipe {recipe}: {sum(len(r['pairs']) for r in results)} positives; {len(plain)} unrelated photos")
+    print("| t | stop codes N | positives found | false matches, pool | false matches, derived/unrelated | genuine (same picture set aside) | genuine pairs |")
+    print("| --- | --- | --- | --- | --- | --- | --- |")
+    for t, n in combos:
+        over = {"tolerance_t": t}
+        res, pl = (results, plain) if n is None else T.guarded(results, plain, [], 20, n, {"recipe": recipe} | over)[:2]
+        pool = [r for r in res + pl if r["codes"]["original"]["creator"]["codes"]]
+        # The research's negatives too: every derived image with no photometric edit or rotation
+        # (identical, crops, collages, second overlap crops) against every unrelated photo, both
+        # ways, a collage never against its own background (granular_bench/bench.py).
+        derived = [(f"{r['name']}:{k}", r["codes"][k], f"unrelated/{bgs[i].stem}" if k.startswith("collage") else None)
+                   for i, r in enumerate(res)
+                   for k in r["codes"] if k == "identical" or k.startswith(("crop", "collage"))
+                   or (k.startswith("overlap") and not k.endswith("first"))]  # fmt: skip
+        unrel = [(r["name"], r["codes"]["original"], None) for r in pl]
+        rates, _ = T.positives(res, 20, 64, 512, over)
         found = sum(v[0] for v in rates.values())
-        fm, _, hits = T.false_matches(pool, 20, 64, 512, {"tolerance_t": t})
+        fm, _, hits = T.false_matches(pool, 20, 64, 512, over)
         cross = across(derived, unrel, t, recipe) + across(unrel, derived, t, recipe)
-        pairs = {tuple(sorted(h)) for h in hits} | {tuple(sorted(h)) for h in cross}
-        genuine = sorted(p for p in pairs if frozenset(x.split("/")[-1].split(":")[0][:4] for x in p) not in SAME)
-        print(f"| {t} | {found} | {fm} | {len(cross)} | {len(genuine)} | {'; '.join(f'{a} ~ {b}' for a, b in genuine)} |",
+        pairs = sorted({tuple(sorted(h)) for h in hits} | {tuple(sorted(h)) for h in cross})
+        genuine = [p for p in pairs if frozenset(key(x) for x in p) not in SAME]
+        log.append({"t": t, "stop_codes": n, "found": found, "positives": sum(v[2] for v in rates.values()),
+                    "pairs": pairs, "genuine": genuine})  # fmt: skip
+        print(f"| {t} | {n or '-'} | {found} | {fm} | {len(cross)} | {len(genuine)} | {'; '.join(f'{a} ~ {b}' for a, b in genuine)} |",
               flush=True)  # fmt: skip
-
+    if len(sys.argv) > 3:
+        Path(sys.argv[3]).write_text(json.dumps(log, indent=1), encoding="utf-8")
 
 # Tuning photos that are the same picture (re-uploads, crops, a PNG and an SVG of one symbol):
 # the research's KNOWN_DUPLICATES, and u094 ~ u095 by eye. Set aside, as the research did.
-SAME = {frozenset(p) for p in [("u057", "u058"), ("u064", "u068"), ("u072", "u073"), ("u094", "u095"),
-                               ("u111", "u112"), ("u131", "u132"), ("u131", "u133"), ("u132", "u133"),
-                               ("u138", "u139"), ("u140", "u141"), ("u193", "u194")]}  # fmt: skip
+SAME = {frozenset(f"unrelated/{x}" for x in p) for p in [
+    ("u057", "u058"), ("u064", "u068"), ("u072", "u073"), ("u094", "u095"), ("u111", "u112"), ("u131", "u132"),
+    ("u131", "u133"), ("u132", "u133"), ("u138", "u139"), ("u140", "u141"), ("u193", "u194")]}  # fmt: skip
 
 
 def across(queries, refs, t, recipe) -> list:
     """False matches of each query's verifier codes (64 at 512 px) against every
     reference's creator codes (20). A collage is never scored against its own background
     or a known duplicate of it."""
-
-    def key(name):
-        return name.split("/")[-1].split(":")[0][:4]
 
     def related(bg, other):
         return bg is not None and (bg == key(other) or frozenset((bg, key(other))) in SAME)

@@ -276,8 +276,10 @@ def run(args) -> dict:
     sets = sorted(d for d in args.lookalikes.iterdir() if d.is_dir()) if args.lookalikes else []
     vset = json.loads(args.verifier_settings) if args.verifier_settings else {}
     common = {"recipe": args.recipe} if args.recipe != 1 else {}
-    over = json.loads(args.match_settings) if args.match_settings else {}
-    R.settings_of(over)
+    overs = json.loads(args.match_settings) if args.match_settings else {}
+    overs = overs if isinstance(overs, list) else [overs]
+    for o in overs:
+        R.settings_of({k: v for k, v in o.items() if k != "stop_codes"})
     R.settings_of(vset)  # unknown settings fail here, not in the workers
     with ProcessPoolExecutor(args.workers) as ex:
         if args.modified:
@@ -296,21 +298,51 @@ def run(args) -> dict:
     has_codes = lambda r: bool(r["codes"]["original"]["creator"]["codes"])  # noqa: E731
     pool = [r for r in results + plain if has_codes(r)]
     looks = [[r for r in rs if has_codes(r)] for rs in looks]
+    timed = timing(originals, vset, common)
+    for over in overs:
+        out = args.out if len(overs) == 1 else args.out / "-".join(f"{k}{v}" for k, v in over.items())
+        score(args, over, out, results, plain, looks, pool, timed, len(originals), len(unrelated), len(sets), vset)
+
+
+def guarded(results, plain, looks, cc, n, settings):
+    """Copies whose stored codes (the first cc of each "creator" run) carry stop marks,
+    counted against the corpus of originals and unrelated photos."""
+    corpus = [first(r["codes"]["original"]["creator"], cc) for r in results + plain]
+    marked = dict(zip(map(id, results + plain), R.mark_stop_codes(corpus, n, settings)))
+
+    def mark(r):
+        codes = dict(r["codes"])
+        for name, c in r["codes"].items():
+            got = marked.get(id(r)) if name == "original" else None
+            codes[name] = c | {"creator": got or R.mark_stop_codes([first(c["creator"], cc)], n, settings, corpus)[0]}
+        return r | {"codes": codes}
+
+    return [mark(r) for r in results], [mark(r) for r in plain], [[mark(r) for r in rs] for rs in looks]
+
+
+def score(args, over, out, results, plain, looks, pool, timed, n_orig, n_unrel, n_sets, vset) -> dict:
+    over = dict(over)
+    stop = over.pop("stop_codes", None)
     report = {
         "recipe": f"image-simprints/{args.recipe}", "date": date.today().isoformat(),
         "environment": {"platform": platform.platform(), "python": platform.python_version(),
                         "opencv": cv2.__version__, "numpy": np.__version__, "pillow": Image.__version__},
-        "inputs": {"originals": len(originals), "unrelated": len(unrelated), "modified": bool(args.modified),
-                   "lookalike_sets": len(sets), "lookalike_images": sum(map(len, looks)),
-                   "positive_pairs": sum(len(r["pairs"]) for r in results), "verifier_settings": vset, "match_settings": over,
-                   "without_codes": [r["name"] for r in results + plain if not has_codes(r)]},
-        "timing_ms": timing(originals, vset, common),
+        "inputs": {"originals": n_orig, "unrelated": n_unrel, "modified": bool(args.modified),
+                   "lookalike_sets": n_sets, "lookalike_images": sum(map(len, looks)),
+                   "positive_pairs": sum(len(r["pairs"]) for r in results), "verifier_settings": vset,
+                   "match_settings": over | ({"stop_codes": stop} if stop is not None else {}),
+                   "without_codes": [r["name"] for r in results + plain if not r["codes"]["original"]["creator"]["codes"]]},
+        "timing_ms": timed,
         "configs": [],
     }  # fmt: skip
+    settings = {"recipe": args.recipe} | over
     for cc, vc, vs in itertools.product(CREATOR_CODES, VERIFIER_CODES, VERIFIER_SIZES):
-        rates, ms_match = positives(results, cc, vc, vs, over)
-        fm, pairs, hits = false_matches(pool, cc, vc, vs, over)
-        la = [false_matches(rs, cc, vc, vs, over) for rs in looks if len(rs) > 1]
+        res, pl, lk = (results, plain, looks) if stop is None else guarded(results, plain, looks, cc, stop, settings)
+        pool_ = [r for r in res + pl if r["codes"]["original"]["creator"]["codes"]]
+        rates, ms_match = positives(res, cc, vc, vs, over)
+        fm, pairs, hits = false_matches(pool_, cc, vc, vs, over)
+        la = [false_matches([r for r in rs if r["codes"]["original"]["creator"]["codes"]], cc, vc, vs, over)
+              for rs in lk if len(rs) > 1]
         total = [sum(v[i] for v in rates.values()) for i in range(3)]
         report["configs"].append({
             "creator_codes": cc, "verifier_codes": vc, "verifier_prepared_size": vs,
@@ -322,11 +354,11 @@ def run(args) -> dict:
             "lookalike_false_matches": sum(x[0] for x in la), "lookalike_pairs": sum(x[1] for x in la),
             "lookalike_false_match_pairs": [h for x in la for h in x[2]],
         })  # fmt: skip
-        print(f"creator {cc}, verifier {vc} at {vs}: found {total[0]}/{total[2]}, false {fm}/{pairs}", flush=True)
-    args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / "report.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
-    (args.out / "summary.md").write_text(markdown(report), encoding="utf-8")
-    print(f"wrote {args.out / 'report.json'} and {args.out / 'summary.md'}")
+        print(f"{over} creator {cc}, verifier {vc} at {vs}: found {total[0]}/{total[2]}, false {fm}/{pairs}", flush=True)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "report.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
+    (out / "summary.md").write_text(markdown(report), encoding="utf-8")
+    print(f"wrote {out / 'report.json'} and {out / 'summary.md'}")
     return report
 
 
@@ -425,7 +457,8 @@ def main(argv=None) -> None:
     t.add_argument("--modified", type=Path, help="folder of modified copies named <original stem>__<label>.<ext>")
     t.add_argument("--lookalikes", type=Path, help="folder of subfolders, each a set of different photos by one photographer")
     t.add_argument("--recipe", type=int, default=1, help="recipe for both sides (2: experimental)")
-    t.add_argument("--match-settings", help="settings for matching only, as JSON, e.g. '{\"tolerance_t\": 28}'")
+    t.add_argument("--match-settings", help="settings for matching only, as JSON, e.g. '{\"tolerance_t\": 28}'; a list gives one report "
+                   "each; \"stop_codes\": N ignores stored codes that agree with more than N other photos")
     t.add_argument("--verifier-settings", help="extra settings for the verifier only, as JSON, e.g. '{\"candidates\": 4096}'")
     t.add_argument("--out", type=Path, default=Path("report"), help="where report.json and summary.md go")
     t.add_argument("--workers", type=int, default=os.cpu_count())
