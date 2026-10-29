@@ -1,5 +1,11 @@
 # image-simprints
 
+[![CI](https://github.com/jmsherrier/image-simprints/actions/workflows/ci.yml/badge.svg)](https://github.com/jmsherrier/image-simprints/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/jmsherrier/image-simprints)](https://github.com/jmsherrier/image-simprints/releases)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue)](pyproject.toml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Status: proof of concept](https://img.shields.io/badge/status-proof%20of%20concept-orange)](#status)
+
 Granular image codes. Each image gets a short list of 256-bit codes, one per
 distinctive spot (SIFT keypoint). Comparing two lists tells you whether one image
 is inside the other, contains it, overlaps it, or is the same picture. This holds
@@ -8,7 +14,7 @@ after crops, resizing, re-encoding, colour changes and rotation.
 This is a proof of concept for Liccium. It is ported from the bakau research
 code. Everything runs on the CPU: no GPU, no network, no model downloads.
 
-**Status:** proof of concept. The recipe may change for how colour
+<a id="status"></a>**Status:** proof of concept. The recipe may change for how colour
 profiles are handled or for further tuning, so treat codes as test data.
 
 On the test split at default settings it finds 97% of re-encoded, resized and
