@@ -82,6 +82,43 @@ turns the verifier's codes into a short list of candidate declarations.
 Either way, a candidate needs at least `min_votes` (2) agreeing codes to
 match, so you can drop owners with only one code hit before calling `match`.
 
+### Recommended: stop codes
+
+Some codes are hubs: they agree with codes of many unrelated images (sky,
+foliage, text, a common logo). Like stop words in text search, they are best
+ignored. Mark each stored code that agrees with codes of more than N other
+pictures, and use `tolerance_t` 28 for lookups and `match`:
+
+```python
+from image_simprints.recipe import mark_stop_codes
+
+GUARD = {"tolerance_t": 28}                      # fitted together with N = 1
+stored = mark_stop_codes(stored, 1, GUARD, against=one_per_picture)
+...
+result = match(query, candidate, GUARD)          # marked codes are ignored
+```
+
+On the test split this finds 69.2% of modified copies, against 68.0% without
+the guard. It has no false match between truly unrelated photos at any of the
+12 sweep settings; without it there is one at 1024 px and one at 50 creator
+codes. See [`tests/corpus/report-v2-fit/tolerance_t28-stop_codes1`](tests/corpus/report-v2-fit/tolerance_t28-stop_codes1/summary.md).
+
+- **Count each picture once.** With N = 1, a picture declared three times would
+  have every code marked. Pass one declaration per picture as `against` (drop
+  declarations that `match` another as `identical`), and mark all declarations
+  against that list.
+- **Leave marked codes out of the index.** `parse` already skips them, so the
+  in-memory index above does too; the banded index should not store them.
+- **Keep the marks current.** A new declaration can make an older code a hub.
+  Mark the new declaration on arrival, and re-mark everything periodically.
+  `mark_stop_codes` compares every code with every other, which is fine for a
+  few thousand declarations. For larger collections, count each code's other
+  owners with the index itself.
+- **Refit N on your data.** N = 1 was fitted on the research's tuning split,
+  a collection of about 1,260 photos. A larger collection has more chance
+  agreements, so N will need to grow. Measure it with test mode:
+  `--match-settings '{"tolerance_t": 28, "stop_codes": N}'`.
+
 ## 4. Operations
 
 - **Threads**: `generate` and `match` keep no state between calls and are safe
