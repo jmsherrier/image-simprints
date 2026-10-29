@@ -14,13 +14,14 @@ after crops, resizing, re-encoding, colour changes and rotation.
 This is a proof of concept for Liccium. It is ported from the bakau research
 code. Everything runs on the CPU: no GPU, no network, no model downloads.
 
-<a id="status"></a>**Status:** proof of concept. The recipe may change for how colour
-profiles are handled or for further tuning, so treat codes as test data.
+<a id="status"></a>**Status:** proof of concept. Recipe 2.1 settles colour profiles (they
+are ignored, so a browser decodes the same pixels); the recipe may still change
+with further tuning, so treat codes as test data.
 
 On the test split at default settings it finds 97% of re-encoded, resized and
-colour-changed copies, 96% of 90% crops, 79% of 50% crops and 77% of pictures
-filling half a collage; 68.0% of all modified copies, with no false match
-between truly unrelated photos ([report](tests/corpus/report-v2-fit/tolerance_t24/summary.md)).
+colour-changed copies, 96% of 90% crops, 77% of 50% crops and 76% of pictures
+filling half a collage; 67.9% of all modified copies, with no false match
+between truly unrelated photos ([report](tests/corpus/report-v2.1/summary.md)).
 
 ```sh
 pip install git+https://github.com/jmsherrier/image-simprints@v0.1.0   # Python 3.12
@@ -96,10 +97,10 @@ image-simprints test .cache/corpus/originals --unrelated .cache/corpus/unrelated
     --lookalikes .cache/corpus/lookalikes
 ```
 
-At default settings recipe 2 finds 68.0% of modified copies (recipe 1: 63.3%),
-with no false match between truly unrelated photos. The current report is
-[`report-v2-fit/tolerance_t24`](tests/corpus/report-v2-fit/tolerance_t24/summary.md);
-the other reports in `tests/corpus/` are history (recipe 1, earlier fits and
+At default settings recipe 2.1 finds 67.9% of modified copies (recipe 2:
+68.0%, recipe 1: 63.3%), with no false match between truly unrelated photos.
+The current report is [`report-v2.1`](tests/corpus/report-v2.1/summary.md); the
+other reports in `tests/corpus/` are history (recipes 1 and 2, fits and
 experiments).
 
 ## Documents

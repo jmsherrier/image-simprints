@@ -250,12 +250,14 @@ codes.
   full-resolution image, so its descriptor shifts when the image size changes:
   with recipe 1, a verifier at 1024 px finds 47.1% of modified copies, against
   63.3% at 512 px. Recipe 2 describes each keypoint at its own octave. On the
-  test split (150 originals, 1,000 unrelated photos) at default settings it
-  finds 68.0%, and 62.0% with the verifier at 1024 px. Neither recipe has a
+  test split (150 originals, 1,000 unrelated photos) at default settings
+  version 2.1 finds 67.9%, and 61.8% with the verifier at 1024 px (version 2:
+  68.0% and 62.0%). Neither recipe has a
   false match between truly unrelated photos at default settings. Every false
   match was checked by eye; the others are duplicates, the same picture, or the
   same scene. `T` and `tolerance_t` were fitted on the tuning split only; the
   fit chose `tolerance_t = 24` for recipe 2. Reports:
+  [recipe 2.1](tests/corpus/report-v2.1/summary.md),
   [recipe 2](tests/corpus/report-v2-fit/tolerance_t24/summary.md),
   [recipe 1](tests/corpus/report/summary.md).
 
@@ -276,7 +278,9 @@ codes.
   Version 2.1 ignores profiles, which a browser does exactly
   (`colorSpaceConversion: "none"`). On the 150 test originals, with the copies
   made from the converted pixels (the case that favours converting), ignoring
-  finds 67.8% against 68.0%. Converting with littleCMS compiled to WebAssembly
+  finds 67.8% against 68.0%. On the test split with test mode's own copies,
+  version 2.1 finds 67.9% against 68.0% for version 2, with the same false
+  matches. Converting with littleCMS compiled to WebAssembly
   closed the browser gap as well, at the cost of a WebAssembly module and an
   ICC parser for each file format. Details:
   [image-simprints-js](https://github.com/jmsherrier/image-simprints-js).

@@ -98,8 +98,8 @@ stored = mark_stop_codes(stored, 1, GUARD, against=one_per_picture)
 result = match(query, candidate, GUARD)          # marked codes are ignored
 ```
 
-On the test split this finds 69.2% of modified copies, against 68.0% without
-the guard. It has no false match between truly unrelated photos at any of the
+On the test split (measured with recipe 2, before 2.1) this finds 69.2% of
+modified copies, against 68.0% without the guard. It has no false match between truly unrelated photos at any of the
 12 sweep settings; without it there is one at 1024 px and one at 50 creator
 codes. See [`tests/corpus/report-v2-fit/tolerance_t28-stop_codes1`](tests/corpus/report-v2-fit/tolerance_t28-stop_codes1/summary.md).
 
@@ -130,7 +130,7 @@ codes. See [`tests/corpus/report-v2-fit/tolerance_t28-stop_codes1`](tests/corpus
   0.25 ms per pair. `image-simprints test` measures both on your hardware.
 - **Verifier size**: keep the verifier at `prepared_size` 512, the same as the
   creator. At 1024 px it finds fewer matches (62% against 68%, see
-  `tests/corpus/report-v2-fit/tolerance_t24`).
+  `tests/corpus/report-v2.1`).
 - **Errors**: unreadable, truncated or unsupported files raise `ImageError`, a
   subclass of `ValueError`. A missing path raises `FileNotFoundError`. A wrong
   source type raises `TypeError`. Bad settings, an unknown role, or codes from
