@@ -1,0 +1,4013 @@
+{
+ "recipe": "image-simprints/2",
+ "date": "2026-10-28",
+ "environment": {
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.10",
+  "opencv": "5.0.0",
+  "numpy": "2.5.1",
+  "pillow": "12.3.0"
+ },
+ "inputs": {
+  "originals": 150,
+  "unrelated": 1000,
+  "modified": false,
+  "lookalike_sets": 44,
+  "lookalike_images": 205,
+  "positive_pairs": 3750,
+  "verifier_settings": {},
+  "match_settings": {
+   "tolerance_t": 28,
+   "stop_codes": 1
+  },
+  "without_codes": [
+   "originals/s042.jpg",
+   "originals/s088.jpg",
+   "unrelated/u0031.jpg",
+   "unrelated/u0098.jpg",
+   "unrelated/u0256.jpg",
+   "unrelated/u0351.jpg",
+   "unrelated/u0485.jpg",
+   "unrelated/u0733.jpg",
+   "unrelated/u0746.jpg",
+   "unrelated/u0820.jpg",
+   "unrelated/u0840.jpg"
+  ]
+ },
+ "timing_ms": {
+  "decode": {
+   "mean": 26.5,
+   "median": 26.4,
+   "p95": 55.1,
+   "images": 150
+  },
+  "creator at 512": {
+   "mean": 82.3,
+   "median": 83.9,
+   "p95": 123.6,
+   "images": 150
+  },
+  "verifier at 512": {
+   "mean": 83.5,
+   "median": 84.1,
+   "p95": 129.9,
+   "images": 150
+  },
+  "verifier at 1024": {
+   "mean": 119.2,
+   "median": 117.7,
+   "p95": 160.8,
+   "images": 150
+  }
+ },
+ "configs": [
+  {
+   "creator_codes": 10,
+   "verifier_codes": 32,
+   "verifier_prepared_size": 512,
+   "default": false,
+   "found": 0.5789,
+   "label_correct": 0.5776,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.9733,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.12,
+     "label_correct": 0.12,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.0267,
+     "label_correct": 0.0267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.34,
+     "label_correct": 0.34,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.1867,
+     "label_correct": 0.1867,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.56,
+     "label_correct": 0.56,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.3933,
+     "label_correct": 0.3933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0067,
+     "label_correct": 0.0067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.1067,
+     "label_correct": 0.1067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.26,
+     "label_correct": 0.26,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.5733,
+     "label_correct": 0.5733,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.6933,
+     "label_correct": 0.6933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.9333,
+     "label_correct": 0.92,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.0733,
+     "label_correct": 0.0733,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.28,
+     "label_correct": 0.28,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.6133,
+     "label_correct": 0.6133,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.56,
+     "label_correct": 0.56,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 29,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0468.jpg",
+     "unrelated/u0469.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0755.jpg",
+     "unrelated/u0756.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.236,
+   "lookalike_false_matches": 4,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 10,
+   "verifier_codes": 32,
+   "verifier_prepared_size": 1024,
+   "default": false,
+   "found": 0.5352,
+   "label_correct": 0.5336,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.8933,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.0933,
+     "label_correct": 0.0933,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.06,
+     "label_correct": 0.06,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.3333,
+     "label_correct": 0.3333,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.1933,
+     "label_correct": 0.1933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.5133,
+     "label_correct": 0.5133,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.3533,
+     "label_correct": 0.3533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0067,
+     "label_correct": 0.0067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.1333,
+     "label_correct": 0.1333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.3067,
+     "label_correct": 0.3067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.54,
+     "label_correct": 0.54,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.5933,
+     "label_correct": 0.5933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.84,
+     "label_correct": 0.8267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.8867,
+     "label_correct": 0.8867,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.0333,
+     "label_correct": 0.0333,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.2133,
+     "label_correct": 0.2133,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.5133,
+     "label_correct": 0.5067,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9533,
+     "label_correct": 0.9533,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.5,
+     "label_correct": 0.5,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 27,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.22,
+   "lookalike_false_matches": 3,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 10,
+   "verifier_codes": 64,
+   "verifier_prepared_size": 512,
+   "default": false,
+   "found": 0.5851,
+   "label_correct": 0.5835,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.9733,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.1333,
+     "label_correct": 0.1333,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.0267,
+     "label_correct": 0.0267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.3733,
+     "label_correct": 0.3733,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.1867,
+     "label_correct": 0.1867,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.6133,
+     "label_correct": 0.6133,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.3933,
+     "label_correct": 0.3933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0067,
+     "label_correct": 0.0067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.1267,
+     "label_correct": 0.12,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.26,
+     "label_correct": 0.26,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.5733,
+     "label_correct": 0.5733,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.6933,
+     "label_correct": 0.6933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.9333,
+     "label_correct": 0.92,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.0733,
+     "label_correct": 0.0733,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.2933,
+     "label_correct": 0.2933,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.6333,
+     "label_correct": 0.6333,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.56,
+     "label_correct": 0.56,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 29,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0468.jpg",
+     "unrelated/u0469.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0755.jpg",
+     "unrelated/u0756.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.264,
+   "lookalike_false_matches": 4,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 10,
+   "verifier_codes": 64,
+   "verifier_prepared_size": 1024,
+   "default": false,
+   "found": 0.5387,
+   "label_correct": 0.5371,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.8933,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.0933,
+     "label_correct": 0.0933,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.06,
+     "label_correct": 0.06,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.3667,
+     "label_correct": 0.3667,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.1933,
+     "label_correct": 0.1933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.5333,
+     "label_correct": 0.5333,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.3533,
+     "label_correct": 0.3533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0067,
+     "label_correct": 0.0067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.14,
+     "label_correct": 0.14,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.3067,
+     "label_correct": 0.3067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.54,
+     "label_correct": 0.54,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.5933,
+     "label_correct": 0.5933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.84,
+     "label_correct": 0.8267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.8867,
+     "label_correct": 0.8867,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.0333,
+     "label_correct": 0.0333,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.2267,
+     "label_correct": 0.2267,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.5267,
+     "label_correct": 0.52,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9533,
+     "label_correct": 0.9533,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.5,
+     "label_correct": 0.5,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 27,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.233,
+   "lookalike_false_matches": 3,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 20,
+   "verifier_codes": 32,
+   "verifier_prepared_size": 512,
+   "default": false,
+   "found": 0.6781,
+   "label_correct": 0.6781,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.26,
+     "label_correct": 0.26,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.1467,
+     "label_correct": 0.1467,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.54,
+     "label_correct": 0.54,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.4067,
+     "label_correct": 0.4067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.7267,
+     "label_correct": 0.7267,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.6133,
+     "label_correct": 0.6133,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0533,
+     "label_correct": 0.0533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.2,
+     "label_correct": 0.2,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.4467,
+     "label_correct": 0.4467,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.7867,
+     "label_correct": 0.7867,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.8733,
+     "label_correct": 0.8733,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.96,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.12,
+     "label_correct": 0.12,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.48,
+     "label_correct": 0.48,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.76,
+     "label_correct": 0.76,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.8333,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 36,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0468.jpg",
+     "unrelated/u0469.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0653.jpg",
+     "unrelated/u0654.jpg"
+    ],
+    [
+     "unrelated/u0702.jpg",
+     "unrelated/u0704.jpg"
+    ],
+    [
+     "unrelated/u0704.jpg",
+     "unrelated/u0702.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0755.jpg",
+     "unrelated/u0756.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0763.jpg",
+     "unrelated/u0761.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.277,
+   "lookalike_false_matches": 4,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 20,
+   "verifier_codes": 32,
+   "verifier_prepared_size": 1024,
+   "default": false,
+   "found": 0.6237,
+   "label_correct": 0.6235,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.2267,
+     "label_correct": 0.2267,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.1667,
+     "label_correct": 0.1667,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.52,
+     "label_correct": 0.52,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.36,
+     "label_correct": 0.36,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.68,
+     "label_correct": 0.68,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.5,
+     "label_correct": 0.5,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0533,
+     "label_correct": 0.0533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.3,
+     "label_correct": 0.3,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.5,
+     "label_correct": 0.5,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.7133,
+     "label_correct": 0.7133,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.7267,
+     "label_correct": 0.7267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.84,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.8867,
+     "label_correct": 0.8867,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.0733,
+     "label_correct": 0.0733,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.36,
+     "label_correct": 0.36,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.7267,
+     "label_correct": 0.7267,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9533,
+     "label_correct": 0.9533,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.6933,
+     "label_correct": 0.6933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 33,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0639.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.258,
+   "lookalike_false_matches": 4,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 20,
+   "verifier_codes": 64,
+   "verifier_prepared_size": 512,
+   "default": true,
+   "found": 0.692,
+   "label_correct": 0.6917,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.3,
+     "label_correct": 0.3,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.16,
+     "label_correct": 0.16,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.6067,
+     "label_correct": 0.6067,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.4267,
+     "label_correct": 0.4267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.7867,
+     "label_correct": 0.7867,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.6267,
+     "label_correct": 0.6267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0533,
+     "label_correct": 0.0533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.2333,
+     "label_correct": 0.2267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.46,
+     "label_correct": 0.46,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.7867,
+     "label_correct": 0.7867,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.8733,
+     "label_correct": 0.8733,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.96,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.1267,
+     "label_correct": 0.1267,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.5067,
+     "label_correct": 0.5067,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.7933,
+     "label_correct": 0.7933,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.8533,
+     "label_correct": 0.8533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 36,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0468.jpg",
+     "unrelated/u0469.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0653.jpg",
+     "unrelated/u0654.jpg"
+    ],
+    [
+     "unrelated/u0702.jpg",
+     "unrelated/u0704.jpg"
+    ],
+    [
+     "unrelated/u0704.jpg",
+     "unrelated/u0702.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0755.jpg",
+     "unrelated/u0756.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0763.jpg",
+     "unrelated/u0761.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.314,
+   "lookalike_false_matches": 6,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set14/0.jpg",
+     "set14/1.jpg"
+    ],
+    [
+     "set41/0.jpg",
+     "set41/1.jpg"
+    ],
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 20,
+   "verifier_codes": 64,
+   "verifier_prepared_size": 1024,
+   "default": false,
+   "found": 0.6315,
+   "label_correct": 0.6312,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.26,
+     "label_correct": 0.26,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.18,
+     "label_correct": 0.18,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.5733,
+     "label_correct": 0.5733,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.3667,
+     "label_correct": 0.3667,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.7,
+     "label_correct": 0.7,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.5067,
+     "label_correct": 0.5067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.0533,
+     "label_correct": 0.0533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.3133,
+     "label_correct": 0.3133,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.5,
+     "label_correct": 0.5,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.7133,
+     "label_correct": 0.7133,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.7267,
+     "label_correct": 0.7267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.84,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.8867,
+     "label_correct": 0.8867,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.08,
+     "label_correct": 0.08,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.3733,
+     "label_correct": 0.3733,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.7467,
+     "label_correct": 0.7467,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9533,
+     "label_correct": 0.9533,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.7,
+     "label_correct": 0.7,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 33,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0639.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.279,
+   "lookalike_false_matches": 6,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set14/0.jpg",
+     "set14/1.jpg"
+    ],
+    [
+     "set41/0.jpg",
+     "set41/1.jpg"
+    ],
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 50,
+   "verifier_codes": 32,
+   "verifier_prepared_size": 512,
+   "default": false,
+   "found": 0.7381,
+   "label_correct": 0.7381,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.34,
+     "label_correct": 0.34,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.28,
+     "label_correct": 0.28,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.5933,
+     "label_correct": 0.5933,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.6067,
+     "label_correct": 0.6067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.7733,
+     "label_correct": 0.7733,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.8067,
+     "label_correct": 0.8067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.1333,
+     "label_correct": 0.1333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.3933,
+     "label_correct": 0.3933,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.6267,
+     "label_correct": 0.6267,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.86,
+     "label_correct": 0.86,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.9067,
+     "label_correct": 0.9067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.96,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.16,
+     "label_correct": 0.16,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.5667,
+     "label_correct": 0.5667,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.8,
+     "label_correct": 0.8,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.9,
+     "label_correct": 0.9,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 44,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0144.jpg",
+     "unrelated/u0145.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0468.jpg",
+     "unrelated/u0469.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0641.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0653.jpg",
+     "unrelated/u0654.jpg"
+    ],
+    [
+     "unrelated/u0654.jpg",
+     "unrelated/u0653.jpg"
+    ],
+    [
+     "unrelated/u0696.jpg",
+     "unrelated/u0698.jpg"
+    ],
+    [
+     "unrelated/u0702.jpg",
+     "unrelated/u0704.jpg"
+    ],
+    [
+     "unrelated/u0704.jpg",
+     "unrelated/u0702.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0755.jpg",
+     "unrelated/u0756.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0761.jpg",
+     "unrelated/u0763.jpg"
+    ],
+    [
+     "unrelated/u0763.jpg",
+     "unrelated/u0761.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.344,
+   "lookalike_false_matches": 6,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set14/0.jpg",
+     "set14/1.jpg"
+    ],
+    [
+     "set41/0.jpg",
+     "set41/1.jpg"
+    ],
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 50,
+   "verifier_codes": 32,
+   "verifier_prepared_size": 1024,
+   "default": false,
+   "found": 0.6669,
+   "label_correct": 0.6667,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.3,
+     "label_correct": 0.3,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.2533,
+     "label_correct": 0.2533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.56,
+     "label_correct": 0.56,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.44,
+     "label_correct": 0.44,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.7,
+     "label_correct": 0.7,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.6533,
+     "label_correct": 0.6533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.14,
+     "label_correct": 0.14,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.4533,
+     "label_correct": 0.4533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.6333,
+     "label_correct": 0.6333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.74,
+     "label_correct": 0.74,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.7467,
+     "label_correct": 0.7467,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.84,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.8867,
+     "label_correct": 0.8867,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.1,
+     "label_correct": 0.1,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.4667,
+     "label_correct": 0.4667,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.74,
+     "label_correct": 0.74,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9533,
+     "label_correct": 0.9533,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.7533,
+     "label_correct": 0.7533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 39,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0107.jpg",
+     "unrelated/u0108.jpg"
+    ],
+    [
+     "unrelated/u0108.jpg",
+     "unrelated/u0107.jpg"
+    ],
+    [
+     "unrelated/u0144.jpg",
+     "unrelated/u0145.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0636.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0639.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0641.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.311,
+   "lookalike_false_matches": 6,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set14/0.jpg",
+     "set14/1.jpg"
+    ],
+    [
+     "set41/0.jpg",
+     "set41/1.jpg"
+    ],
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 50,
+   "verifier_codes": 64,
+   "verifier_prepared_size": 512,
+   "default": false,
+   "found": 0.7715,
+   "label_correct": 0.7709,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.4733,
+     "label_correct": 0.4733,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.3333,
+     "label_correct": 0.3333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.7267,
+     "label_correct": 0.7267,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.6667,
+     "label_correct": 0.6667,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.8333,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.1533,
+     "label_correct": 0.1533,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.4733,
+     "label_correct": 0.46,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.68,
+     "label_correct": 0.68,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.86,
+     "label_correct": 0.86,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.9067,
+     "label_correct": 0.9067,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.96,
+     "label_correct": 0.96,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.1933,
+     "label_correct": 0.1933,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.6467,
+     "label_correct": 0.6467,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.8333,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.92,
+     "label_correct": 0.92,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.9733,
+     "label_correct": 0.9733,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 48,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0108.jpg",
+     "unrelated/u0107.jpg"
+    ],
+    [
+     "unrelated/u0144.jpg",
+     "unrelated/u0145.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0468.jpg",
+     "unrelated/u0469.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0636.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0636.jpg",
+     "unrelated/u0641.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0641.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0653.jpg",
+     "unrelated/u0654.jpg"
+    ],
+    [
+     "unrelated/u0654.jpg",
+     "unrelated/u0653.jpg"
+    ],
+    [
+     "unrelated/u0696.jpg",
+     "unrelated/u0698.jpg"
+    ],
+    [
+     "unrelated/u0702.jpg",
+     "unrelated/u0704.jpg"
+    ],
+    [
+     "unrelated/u0704.jpg",
+     "unrelated/u0702.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0755.jpg",
+     "unrelated/u0756.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0761.jpg",
+     "unrelated/u0763.jpg"
+    ],
+    [
+     "unrelated/u0763.jpg",
+     "unrelated/u0761.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.404,
+   "lookalike_false_matches": 6,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set14/0.jpg",
+     "set14/1.jpg"
+    ],
+    [
+     "set41/0.jpg",
+     "set41/1.jpg"
+    ],
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  },
+  {
+   "creator_codes": 50,
+   "verifier_codes": 64,
+   "verifier_prepared_size": 1024,
+   "default": false,
+   "found": 0.6853,
+   "label_correct": 0.6851,
+   "per_manipulation": {
+    "avif50": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "bright_contrast": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "collage15": {
+     "found": 0.3733,
+     "label_correct": 0.3733,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage15 reversed": {
+     "found": 0.28,
+     "label_correct": 0.28,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage30": {
+     "found": 0.6333,
+     "label_correct": 0.6333,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage30 reversed": {
+     "found": 0.46,
+     "label_correct": 0.46,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "collage50": {
+     "found": 0.74,
+     "label_correct": 0.74,
+     "pairs": 150,
+     "expected": "contains"
+    },
+    "collage50 reversed": {
+     "found": 0.66,
+     "label_correct": 0.66,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop10": {
+     "found": 0.1667,
+     "label_correct": 0.1667,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop20": {
+     "found": 0.4867,
+     "label_correct": 0.4867,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop30": {
+     "found": 0.66,
+     "label_correct": 0.66,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop50": {
+     "found": 0.74,
+     "label_correct": 0.74,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop70": {
+     "found": 0.7467,
+     "label_correct": 0.7467,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "crop90": {
+     "found": 0.84,
+     "label_correct": 0.8333,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "greyscale": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "identical": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "jpeg60": {
+     "found": 0.8867,
+     "label_correct": 0.8867,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "overlap15": {
+     "found": 0.1333,
+     "label_correct": 0.1333,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap30": {
+     "found": 0.5333,
+     "label_correct": 0.5333,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "overlap50": {
+     "found": 0.7667,
+     "label_correct": 0.7667,
+     "pairs": 150,
+     "expected": "overlapping"
+    },
+    "resize25": {
+     "found": 0.9667,
+     "label_correct": 0.9667,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "resize50": {
+     "found": 0.9533,
+     "label_correct": 0.9533,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "rotate15": {
+     "found": 0.76,
+     "label_correct": 0.76,
+     "pairs": 150,
+     "expected": "contained_in"
+    },
+    "rotate90": {
+     "found": 0.88,
+     "label_correct": 0.88,
+     "pairs": 150,
+     "expected": "identical"
+    },
+    "webp60": {
+     "found": 0.8933,
+     "label_correct": 0.8933,
+     "pairs": 150,
+     "expected": "identical"
+    }
+   },
+   "false_matches": 41,
+   "unrelated_pairs": 1296182,
+   "false_match_pairs": [
+    [
+     "unrelated/u0081.jpg",
+     "unrelated/u0082.jpg"
+    ],
+    [
+     "unrelated/u0082.jpg",
+     "unrelated/u0081.jpg"
+    ],
+    [
+     "unrelated/u0107.jpg",
+     "unrelated/u0108.jpg"
+    ],
+    [
+     "unrelated/u0108.jpg",
+     "unrelated/u0107.jpg"
+    ],
+    [
+     "unrelated/u0144.jpg",
+     "unrelated/u0145.jpg"
+    ],
+    [
+     "unrelated/u0145.jpg",
+     "unrelated/u0144.jpg"
+    ],
+    [
+     "unrelated/u0150.jpg",
+     "unrelated/u0151.jpg"
+    ],
+    [
+     "unrelated/u0151.jpg",
+     "unrelated/u0150.jpg"
+    ],
+    [
+     "unrelated/u0167.jpg",
+     "unrelated/u0169.jpg"
+    ],
+    [
+     "unrelated/u0169.jpg",
+     "unrelated/u0167.jpg"
+    ],
+    [
+     "unrelated/u0236.jpg",
+     "unrelated/u0237.jpg"
+    ],
+    [
+     "unrelated/u0237.jpg",
+     "unrelated/u0236.jpg"
+    ],
+    [
+     "unrelated/u0279.jpg",
+     "unrelated/u0280.jpg"
+    ],
+    [
+     "unrelated/u0280.jpg",
+     "unrelated/u0279.jpg"
+    ],
+    [
+     "unrelated/u0324.jpg",
+     "unrelated/u0326.jpg"
+    ],
+    [
+     "unrelated/u0326.jpg",
+     "unrelated/u0324.jpg"
+    ],
+    [
+     "unrelated/u0418.jpg",
+     "unrelated/u0419.jpg"
+    ],
+    [
+     "unrelated/u0419.jpg",
+     "unrelated/u0418.jpg"
+    ],
+    [
+     "unrelated/u0464.jpg",
+     "unrelated/u0465.jpg"
+    ],
+    [
+     "unrelated/u0465.jpg",
+     "unrelated/u0464.jpg"
+    ],
+    [
+     "unrelated/u0469.jpg",
+     "unrelated/u0468.jpg"
+    ],
+    [
+     "unrelated/u0541.jpg",
+     "unrelated/u0542.jpg"
+    ],
+    [
+     "unrelated/u0542.jpg",
+     "unrelated/u0541.jpg"
+    ],
+    [
+     "unrelated/u0628.jpg",
+     "unrelated/u0727.jpg"
+    ],
+    [
+     "unrelated/u0636.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0636.jpg",
+     "unrelated/u0641.jpg"
+    ],
+    [
+     "unrelated/u0639.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0639.jpg"
+    ],
+    [
+     "unrelated/u0640.jpg",
+     "unrelated/u0641.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0636.jpg"
+    ],
+    [
+     "unrelated/u0641.jpg",
+     "unrelated/u0640.jpg"
+    ],
+    [
+     "unrelated/u0727.jpg",
+     "unrelated/u0628.jpg"
+    ],
+    [
+     "unrelated/u0756.jpg",
+     "unrelated/u0755.jpg"
+    ],
+    [
+     "unrelated/u0781.jpg",
+     "unrelated/u0782.jpg"
+    ],
+    [
+     "unrelated/u0782.jpg",
+     "unrelated/u0781.jpg"
+    ],
+    [
+     "unrelated/u0800.jpg",
+     "unrelated/u0801.jpg"
+    ],
+    [
+     "unrelated/u0801.jpg",
+     "unrelated/u0800.jpg"
+    ],
+    [
+     "unrelated/u0812.jpg",
+     "unrelated/u0814.jpg"
+    ],
+    [
+     "unrelated/u0814.jpg",
+     "unrelated/u0812.jpg"
+    ],
+    [
+     "unrelated/u0963.jpg",
+     "unrelated/u0964.jpg"
+    ],
+    [
+     "unrelated/u0964.jpg",
+     "unrelated/u0963.jpg"
+    ]
+   ],
+   "ms_per_match": 0.345,
+   "lookalike_false_matches": 6,
+   "lookalike_pairs": 784,
+   "lookalike_false_match_pairs": [
+    [
+     "set14/0.jpg",
+     "set14/1.jpg"
+    ],
+    [
+     "set41/0.jpg",
+     "set41/1.jpg"
+    ],
+    [
+     "set42/0.jpg",
+     "set42/1.jpg"
+    ],
+    [
+     "set42/1.jpg",
+     "set42/0.jpg"
+    ],
+    [
+     "set43/0.jpg",
+     "set43/1.jpg"
+    ],
+    [
+     "set43/1.jpg",
+     "set43/0.jpg"
+    ]
+   ]
+  }
+ ]
+}
