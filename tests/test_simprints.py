@@ -77,7 +77,7 @@ def test_bad_arguments():
     with pytest.raises(ValueError):
         s.match(a | {"recipe_version": "other/1"}, a)
     with pytest.raises(ValueError):  # recipes are never mixed
-        s.match(s.generate(SHAPES, "verifier", {"recipe": 2}), a)
+        s.match(s.generate(SHAPES, "verifier", {"recipe": 1}), a)
 
 
 def test_too_small_gives_no_codes_and_a_reason():

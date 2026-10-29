@@ -16,9 +16,9 @@ import cv2
 import numpy as np
 from PIL import Image, ImageCms, ImageOps
 
-RECIPE = "image-simprints/1"
+RECIPE = "image-simprints/2"
 DEFAULTS = {
-    "recipe": 1,  # 1: descriptors at octave 0, as the research; 2: at each keypoint's octave (experimental)
+    "recipe": 2,  # 2: descriptors at each keypoint's octave; 1: at octave 0, as the research
     "creator_codes": 20,  # codes a creator stores (top-K)
     "verifier_codes": 64,  # codes a verifier extracts (up to K)
     "tolerance_t": 24,  # Hamming distance at or below which two codes agree
@@ -40,7 +40,7 @@ BACKGROUND = 255  # alpha is flattened onto white
 RECIPES = {
     1: {"defaults": {}, "constants": "projection.f32",
         "sha256": "3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed"},
-    2: {"defaults": {"tolerance_t": 32}, "constants": "projection_v2.f32",  # t fitted on tuning: scripts/fit_recipe_v2.py
+    2: {"defaults": {}, "constants": "projection_v2.f32",  # T and t fitted on tuning: scripts/fit_recipe_v2.py
         "sha256": "eb70f802f0ec95e1b177abc3da4438144af276a0b34c2deed0ecf09ff8f96921"},
 }  # fmt: skip
 
@@ -80,7 +80,7 @@ def settings_of(settings: dict | None) -> dict:
     unknown = set(settings or {}) - set(DEFAULTS)
     if unknown:
         raise ValueError(f"unknown settings: {sorted(unknown)}")
-    return defaults_of((settings or {}).get("recipe", 1)) | (settings or {})
+    return defaults_of((settings or {}).get("recipe", DEFAULTS["recipe"])) | (settings or {})
 
 
 def version_of(s: dict) -> str:

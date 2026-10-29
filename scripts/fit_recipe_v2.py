@@ -86,7 +86,7 @@ def codes(recipe: int):
     photos, and the tuning-extra photos; and each original's collage background."""
     originals, unrelated = tuning("original"), tuning("unrelated")
     extra = tuning("unrelated", ("tuning-extra",))
-    common = {"recipe": recipe} if recipe != 1 else {}
+    common = {"recipe": recipe}
     bgs = [unrelated[i % len(unrelated)] for i in range(len(originals))]
     with ProcessPoolExecutor() as ex:
         results = list(ex.map(T.work_original, [(i, p, bgs[i], {}, common) for i, p in enumerate(originals)]))

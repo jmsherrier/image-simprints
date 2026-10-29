@@ -275,7 +275,7 @@ def run(args) -> dict:
     unrelated = images_in(args.unrelated) if args.unrelated else []
     sets = sorted(d for d in args.lookalikes.iterdir() if d.is_dir()) if args.lookalikes else []
     vset = json.loads(args.verifier_settings) if args.verifier_settings else {}
-    common = {"recipe": args.recipe} if args.recipe != 1 else {}
+    common = {"recipe": args.recipe}
     overs = json.loads(args.match_settings) if args.match_settings else {}
     overs = overs if isinstance(overs, list) else [overs]
     for o in overs:
@@ -481,7 +481,7 @@ def main(argv=None) -> None:
     t.add_argument("--unrelated", type=Path, help="folder of images unrelated to the originals and each other")
     t.add_argument("--modified", type=Path, help="folder of modified copies named <original stem>__<label>.<ext>")
     t.add_argument("--lookalikes", type=Path, help="folder of subfolders, each a set of different photos by one photographer")
-    t.add_argument("--recipe", type=int, default=1, help="recipe for both sides (2: experimental)")
+    t.add_argument("--recipe", type=int, default=2, help="recipe for both sides (1: the research's, octave 0)")
     t.add_argument("--match-settings", help="settings for matching only, as JSON, e.g. '{\"tolerance_t\": 28}'; a list gives one report "
                    "each; \"stop_codes\": N ignores stored codes that agree with more than N other photos")
     t.add_argument("--verifier-settings", help="extra settings for the verifier only, as JSON, e.g. '{\"candidates\": 4096}'")

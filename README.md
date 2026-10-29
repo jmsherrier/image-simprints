@@ -38,7 +38,7 @@ for example an image that is too small.
   covers.
 - `agreeing_codes`: how many codes agreed.
 
-Settings and their defaults: `creator_codes=20`, `verifier_codes=64`,
+Settings and their defaults: `recipe=2`, `creator_codes=20`, `verifier_codes=64`,
 `tolerance_t=24`, `min_votes=2`, `prepared_size=512`, `span_check=0.05`. Each
 can be overridden, for example `generate(src, "verifier", {"prepared_size":
 1024})`. Overrides are recorded in `recipe_version`. A damaged or unsupported
@@ -65,22 +65,26 @@ only.
 
 ## Test corpus
 
-[`tests/corpus/manifest.csv`](tests/corpus/manifest.csv) lists 1,358 CC0 and
+[`tests/corpus/manifest.csv`](tests/corpus/manifest.csv) lists 2,618 CC0 and
 public-domain photographs from Wikimedia Commons. For each one it gives the page,
 the file URL, the licence and a SHA-256. The set is the bakau research
 benchmark's test split (150 originals, 400 unrelated photos, 208 look-alikes in
 44 sets of photos by one photographer), plus 600 more unrelated photos from the
-same Commons category. The images are not in the repository. `fetch-corpus`
+same Commons category. It also lists the research's tuning split (60 originals,
+200 unrelated photos) and 1,000 more unrelated tuning photos; recipe 2 was
+fitted on these only. The images are not in the repository. `fetch-corpus`
 downloads them and checks every hash; it is the package's only network use.
 
 ```sh
 image-simprints fetch-corpus      # into .cache/corpus (gitignored)
 image-simprints test .cache/corpus/originals --unrelated .cache/corpus/unrelated \
-    --lookalikes .cache/corpus/lookalikes --out tests/corpus/report
+    --lookalikes .cache/corpus/lookalikes
 ```
 
-The committed results are in
-[`tests/corpus/report/summary.md`](tests/corpus/report/summary.md).
+At default settings recipe 2 finds 68.0% of modified copies (recipe 1: 63.3%),
+with no false match between truly unrelated photos. Results:
+[recipe 2](tests/corpus/report-v2-fit/tolerance_t24/summary.md),
+[recipe 1](tests/corpus/report/summary.md).
 
 ## Documents
 

@@ -1,4 +1,4 @@
-# Recipe `image-simprints/1`
+# Recipe `image-simprints/2`
 
 This document specifies how to turn an image into codes and how to compare two
 sets of codes. It is meant to be enough to reimplement the recipe. The reference
@@ -8,6 +8,10 @@ The recipe is ported from the bakau research code
 picked the variant "topf-20 | rootsift256 | m2", with 64 verifier codes and a
 span check of 0.05.
 
+Recipe 2 is the default. It differs from recipe 1 (the research's) in one step:
+each descriptor is computed at its keypoint's own octave (§5.1), with thresholds
+refitted for that (§5). Recipe 1 stays available with the setting `recipe: 1`.
+
 Every operation is one OpenCV.js also has (SIFT needs a custom OpenCV.js build),
 or is plain arithmetic.
 
@@ -15,6 +19,7 @@ or is plain arithmetic.
 
 | setting | default | used by |
 | --- | --- | --- |
+| `recipe` | 2 | generate: 2, or 1 for the research's descriptors |
 | `creator_codes` | 20 | generate, role `creator`: keep the top N |
 | `verifier_codes` | 64 | generate, role `verifier`: keep up to N |
 | `prepared_size` | 512 | generate: longer side of the prepared image |
@@ -22,10 +27,10 @@ or is plain arithmetic.
 | `min_votes` | 2 | match: agreeing codes needed on one transform |
 | `span_check` | 0.05 | match: minimum spread of the agreeing verifier keypoints |
 
-The version string is `image-simprints/1`. Each setting that differs from its
-default is appended as `;name=value`, in the order of the table above
-(for example `image-simprints/1;prepared_size=1024`). `match` refuses codes
-whose version does not start with `image-simprints/1`.
+The version string is `image-simprints/<recipe>`. Each other setting that
+differs from its default is appended as `;name=value`, in the order of the table
+above (for example `image-simprints/2;prepared_size=1024`). `match` refuses
+codes of an unknown recipe, and never compares codes of two different recipes.
 
 Fixed constants (not settings): `MIN_SIDE = 32`, `CANDIDATES = 512`,
 `SIFT_FEATURES = 1500`, `SIZE_FLOOR = 0.02`, `DETAIL_FLOOR = 200`,
@@ -108,11 +113,14 @@ coefficients after `L[0][0]` (row-major) and call them `ac`. The detail is
 
 ## 5. Codes
 
-1. **Descriptors**: for each selected keypoint, make `cv2.KeyPoint(x, y, size,
-   angle)` (octave 0, response 0). Compute OpenCV SIFT descriptors for these on
-   the prepared grey image. The keypoints are re-created rather than reused, so
-   every descriptor is computed at octave 0 with no upsampled base. This is how
-   the research computed them.
+1. **Descriptors**: OpenCV SIFT descriptors on the prepared grey image.
+   - Recipe 2: detect and describe in one call (`detectAndCompute`, same
+     parameters as §4.1) and keep each selected keypoint's own descriptor. Each
+     is computed at the octave the detector found it in.
+   - Recipe 1: for each selected keypoint, make `cv2.KeyPoint(x, y, size,
+     angle)` (octave 0, response 0) and `compute` descriptors for these. Every
+     descriptor is then computed at octave 0 with no upsampled base. This is
+     how the research computed them.
 2. **RootSIFT**, in float32 at every step: `d = d / (sum(d) + 1e-7)`, then
    `r = sqrt(d) * 255`, clip to 0–255, then truncate to uint8.
 3. **Projection**: `bit[j] = (Σᵢ r[i] · P[i][j]) > T[j]` for `j < 256`.
@@ -123,13 +131,20 @@ coefficients after `L[0][0]` (row-major) and call them `ac`. The detail is
 4. **Hex**: bit 0 is the most significant bit of the first byte. The 32 bytes
    are written as 64 lower-case hex characters.
 
-**Constants**: [`src/image_simprints/projection.f32`](src/image_simprints/projection.f32),
-132,096 bytes of little-endian float32. It holds `P` (128×256, row-major) and
-then `T` (256 values). SHA-256 is
-`3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed`; the package
-checks it on import. The research fitted them once, on its tuning split. `P`
-comes from `numpy.random.default_rng(20261013).normal(size=(128, 256))`, and `T`
-is the per-dimension median of the projected tuning descriptors. They are never
+**Constants**: one file per recipe, 132,096 bytes of little-endian float32. It
+holds `P` (128×256, row-major) and then `T` (256 values). The package checks the
+SHA-256 on first use.
+
+| recipe | file | SHA-256 |
+| --- | --- | --- |
+| 2 | [`projection_v2.f32`](src/image_simprints/projection_v2.f32) | `eb70f802f0ec95e1b177abc3da4438144af276a0b34c2deed0ecf09ff8f96921` |
+| 1 | [`projection.f32`](src/image_simprints/projection.f32) | `3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed` |
+
+`P` is the same in both: `numpy.random.default_rng(20261013).normal(size=(128,
+256))`. `T` is the per-dimension median of the projected descriptors of the
+research's tuning split: for recipe 1 as the research fitted it, for recipe 2
+refitted on 12,705 descriptors computed the recipe 2 way
+([`scripts/fit_recipe_v2.py`](scripts/fit_recipe_v2.py)). They are never
 regenerated.
 
 **Output**, one entry per selected keypoint, in rank order:
@@ -195,15 +210,23 @@ terms, the verifier is the query and the candidate is the reference.
 ## 7. Test vectors
 
 The images are in [`tests/vectors/`](tests/vectors/). The expected `creator`
-output at default settings, for every code, is in
-[`tests/vectors/expected.json`](tests/vectors/expected.json). The images are
-synthetic and seeded ([`tests/make_vectors.py`](tests/make_vectors.py)).
+output, for every code, is in
+[`tests/vectors/expected_v2.json`](tests/vectors/expected_v2.json) (recipe 2,
+default settings) and [`tests/vectors/expected.json`](tests/vectors/expected.json)
+(recipe 1). The images are synthetic and seeded
+([`tests/make_vectors.py`](tests/make_vectors.py)). Both recipes select the same
+keypoints; only the codes differ.
 
-| image | SHA-256 (first 16) | prepared | codes | first code |
+| image | SHA-256 (first 16) | prepared | codes | first keypoint |
 | --- | --- | --- | --- | --- |
-| shapes.png (640×480) | 902012a8c25b8141 | 512×384 | 20 | `52cb6b5fbb6fc205600b09eb0524896584d204646719b51cf90848bd1224aa80` at x 0.753158, y 0.360695, scale 0.065891, angle 100.702 |
-| portrait.png (480×720) | 5d4418a54c8dc9ce | 341×512 | 20 | `55cd239825262be272a4d3d7f25b768f340db7b12411eb46bc8531a7f0e54cdc` at x 0.684841, y 0.864998, scale 0.106013, angle 87.277 |
+| shapes.png (640×480) | 902012a8c25b8141 | 512×384 | 20 | x 0.753158, y 0.360695, scale 0.065891, angle 100.702 |
+| portrait.png (480×720) | 5d4418a54c8dc9ce | 341×512 | 20 | x 0.684841, y 0.864998, scale 0.106013, angle 87.277 |
 | small.png (24×24) | d256eeb4f84d86be | 24×24 | 0 | reason `too small` |
+
+| image | first code, recipe 2 | first code, recipe 1 |
+| --- | --- | --- |
+| shapes.png | `2bcb4b7b9865c349220b08eb45a5a5f7e5d608a02719b55efd6d44b56224ebb0` | `52cb6b5fbb6fc205600b09eb0524896584d204646719b51cf90848bd1224aa80` |
+| portrait.png | `d5c5038d2b060ae650a6d7053a4bf68a9009e0b1e40960d8fa043d25afa5650d` | `55cd239825262be272a4d3d7f25b768f340db7b12411eb46bc8531a7f0e54cdc` |
 
 These vectors were produced with OpenCV 5.0.0 (opencv-python-headless
 5.0.0.93), NumPy 2.5.1 and Pillow 12.3.0. With those pins the codes are
@@ -215,6 +238,20 @@ Another OpenCV build or a reimplementation may differ in a few bits of rare
 codes.
 
 ## 8. Where this differs from the research code
+
+- **Descriptors** (recipe 2): the research computed every descriptor at octave
+  0. A keypoint found at a coarse octave is then described from the
+  full-resolution image, so its descriptor shifts when the image size changes:
+  with recipe 1, a verifier at 1024 px finds 47.1% of modified copies, against
+  63.3% at 512 px. Recipe 2 describes each keypoint at its own octave. On the
+  test split (150 originals, 1,000 unrelated photos) at default settings it
+  finds 68.0%, and 62.0% with the verifier at 1024 px. Neither recipe has a
+  false match between truly unrelated photos at default settings. Every false
+  match was checked by eye; the others are duplicates, the same picture, or the
+  same scene. `T` and `tolerance_t` were fitted on the tuning split only; the
+  fit chose `tolerance_t = 24` for recipe 2. Reports:
+  [recipe 2](tests/corpus/report-v2-fit/tolerance_t24/summary.md),
+  [recipe 1](tests/corpus/report/summary.md).
 
 - **Preparation**: the research converted to grey with Pillow
   (`convert("L")`) and resized with Pillow's `LANCZOS`. Neither is in OpenCV,

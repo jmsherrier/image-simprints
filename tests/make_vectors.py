@@ -42,7 +42,7 @@ def main(recipe: int) -> None:
     for name, rgb in images.items():
         if recipe == 1:
             cv2.imwrite(str(HERE / name), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
-        expected[name] = generate(HERE / name, "creator", {"recipe": recipe} if recipe != 1 else None)
+        expected[name] = generate(HERE / name, "creator", {"recipe": recipe})
     out = HERE / ("expected.json" if recipe == 1 else f"expected_v{recipe}.json")
     out.write_text(json.dumps(expected, indent=1) + "\n", encoding="utf-8")
     for name, r in expected.items():
