@@ -8,8 +8,17 @@ after crops, resizing, re-encoding, colour changes and rotation.
 This is a proof of concept for Liccium. It is ported from the bakau research
 code. Everything runs on the CPU: no GPU, no network, no model downloads.
 
+**Status:** proof of concept. The recipe may change once more, for how colour
+profiles are handled, so treat codes as test data.
+
+On the test split at default settings it finds 97% of re-encoded, resized and
+colour-changed copies, 96% of 90% crops, 79% of 50% crops and 77% of pictures
+filling half a collage; 68.0% of all modified copies, with no false match
+between truly unrelated photos ([report](tests/corpus/report-v2-fit/tolerance_t24/summary.md)).
+
 ```sh
-pip install .            # Python 3.12; numpy, opencv-python-headless, pillow (pinned)
+pip install git+https://github.com/jmsherrier/image-simprints@v0.1.0   # Python 3.12
+pip install .            # from a checkout; numpy, opencv-python-headless, pillow (pinned)
 ```
 
 ```python
@@ -82,15 +91,19 @@ image-simprints test .cache/corpus/originals --unrelated .cache/corpus/unrelated
 ```
 
 At default settings recipe 2 finds 68.0% of modified copies (recipe 1: 63.3%),
-with no false match between truly unrelated photos. Results:
-[recipe 2](tests/corpus/report-v2-fit/tolerance_t24/summary.md),
-[recipe 1](tests/corpus/report/summary.md).
+with no false match between truly unrelated photos. The current report is
+[`report-v2-fit/tolerance_t24`](tests/corpus/report-v2-fit/tolerance_t24/summary.md);
+the other reports in `tests/corpus/` are history (recipe 1, earlier fits and
+experiments).
 
 ## Documents
 
 - [RECIPE.md](RECIPE.md): the recipe, precisely enough to reimplement, with
   test vectors.
-- [INTEGRATION.md](INTEGRATION.md): how to wire this into an app.
+- [INTEGRATION.md](INTEGRATION.md): how to wire this into an app. Its stop
+  codes, an index-side option, guard against images that match too many others.
+- [image-simprints-js](https://github.com/jmsherrier/image-simprints-js): the
+  recipe in the browser, on a custom OpenCV.js build.
 
 ## Tests
 
