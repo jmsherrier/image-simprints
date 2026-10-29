@@ -8,8 +8,8 @@ after crops, resizing, re-encoding, colour changes and rotation.
 This is a proof of concept for Liccium. It is ported from the bakau research
 code. Everything runs on the CPU: no GPU, no network, no model downloads.
 
-**Status:** proof of concept. The recipe may change once more, for how colour
-profiles are handled, so treat codes as test data.
+**Status:** proof of concept. The recipe may change for how colour
+profiles are handled or for further tuning, so treat codes as test data.
 
 On the test split at default settings it finds 97% of re-encoded, resized and
 colour-changed copies, 96% of 90% crops, 79% of 50% crops and 77% of pictures
