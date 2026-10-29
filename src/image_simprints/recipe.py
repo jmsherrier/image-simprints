@@ -14,9 +14,9 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image, ImageCms, ImageOps
+from PIL import Image, ImageOps
 
-RECIPE = "image-simprints/2"
+RECIPE = "image-simprints/2.1"
 DEFAULTS = {
     "recipe": 2,  # 2: descriptors at each keypoint's octave; 1: at octave 0, as the research
     "creator_codes": 20,  # codes a creator stores (top-K)
@@ -36,11 +36,12 @@ SCALE_RANGE = (0.1, 10.0)  # plausible scale between two images of one picture
 CONTAINED = 0.95  # a footprint share at or above this counts as the whole image
 BACKGROUND = 255  # alpha is flattened onto white
 
-# Per recipe: its defaults where they differ from DEFAULTS, and its constants file.
+# Per recipe: its version (.1: colour profiles ignored), its defaults where they differ
+# from DEFAULTS, and its constants file.
 RECIPES = {
-    1: {"defaults": {}, "constants": "projection.f32",
+    1: {"version": "1.1", "defaults": {}, "constants": "projection.f32",
         "sha256": "3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed"},
-    2: {"defaults": {}, "constants": "projection_v2.f32",  # T and t fitted on tuning: scripts/fit_recipe_v2.py
+    2: {"version": "2.1", "defaults": {}, "constants": "projection_v2.f32",  # T and t fitted on tuning: scripts/fit_recipe_v2.py
         "sha256": "eb70f802f0ec95e1b177abc3da4438144af276a0b34c2deed0ecf09ff8f96921"},
 }  # fmt: skip
 
@@ -66,7 +67,6 @@ def projection(recipe: int) -> tuple[np.ndarray, np.ndarray]:
 
 
 projection(1)  # checked on import
-_SRGB = ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB"))
 _DCT8 = 2.0 * np.cos(np.pi * np.outer(np.arange(8), 2 * np.arange(PATCH_SIDE) + 1) / (2 * PATCH_SIDE))
 
 
@@ -84,17 +84,27 @@ def settings_of(settings: dict | None) -> dict:
 
 
 def version_of(s: dict) -> str:
-    """The recipe version: image-simprints/<recipe>, plus every setting that differs
-    from that recipe's default."""
+    """The recipe version: image-simprints/<recipe's version>, plus every setting that
+    differs from that recipe's default."""
     d = defaults_of(s["recipe"])
-    return ";".join([f"image-simprints/{s['recipe']}", *(f"{k}={s[k]}" for k in DEFAULTS if s[k] != d[k])])
+    return ";".join([f"image-simprints/{RECIPES[s['recipe']]['version']}", *(f"{k}={s[k]}" for k in DEFAULTS if s[k] != d[k])])
+
+
+def recipe_of(version: str) -> int:
+    """The recipe of a version string."""
+    head = version.split(";")[0]
+    for n, r in RECIPES.items():
+        if head == f"image-simprints/{r['version']}":
+            return n
+    raise ValueError(f"codes are from an unknown recipe: {version!r}")
 
 
 # --- decoding --------------------------------------------------------------------------
 
 
 def decode(source) -> np.ndarray:
-    """RGB uint8 (h, w, 3), sRGB, upright, alpha flattened, first frame."""
+    """RGB uint8 (h, w, 3), upright, alpha flattened, first frame. Colour profiles are
+    ignored: the decoded values are taken as sRGB."""
     if isinstance(source, np.ndarray):
         return _from_array(source)
     if isinstance(source, (bytes, bytearray, memoryview)):
@@ -106,15 +116,14 @@ def decode(source) -> np.ndarray:
     try:
         with Image.open(fp) as im:
             im.load()  # the first frame; damaged data fails here
-            return _to_srgb(im)
+            return _to_rgb(im)
     except FileNotFoundError:
         raise
     except Exception as e:  # Pillow raises many kinds on damaged input
         raise ImageError(f"cannot decode image: {type(e).__name__}: {e}") from e
 
 
-def _to_srgb(im: Image.Image) -> np.ndarray:
-    icc = im.info.get("icc_profile")
+def _to_rgb(im: Image.Image) -> np.ndarray:
     im = ImageOps.exif_transpose(im)
     if im.mode in ("I;16", "I;16L", "I;16B", "I;16N", "I"):  # 16-bit grey: keep the high byte
         im = Image.fromarray((np.clip(np.asarray(im), 0, 65535).astype(np.uint32) >> 8).astype(np.uint8))
@@ -123,13 +132,6 @@ def _to_srgb(im: Image.Image) -> np.ndarray:
         im = im.convert("RGBA")
         alpha = np.asarray(im.getchannel("A"), np.uint32)[..., None]
         im = im.convert("RGB")
-    if im.mode not in ("RGB", "L", "CMYK"):
-        im = im.convert("RGB")
-    if icc:
-        try:
-            im = ImageCms.profileToProfile(im, ImageCms.ImageCmsProfile(io.BytesIO(icc)), _SRGB, outputMode="RGB")
-        except (ImageCms.PyCMSError, OSError, ValueError):
-            pass  # an unreadable or mismatched profile: the pixels are taken as sRGB
     rgb = np.asarray(im.convert("RGB"), np.uint8)
     return rgb if alpha is None else _flatten(rgb, alpha)
 
@@ -254,8 +256,7 @@ def rootsift(desc: np.ndarray) -> np.ndarray:
 def parse(r: dict) -> tuple[np.ndarray, np.ndarray, tuple[float, float]]:
     """A generate() result -> (codes as (n, 4) uint64, geometry (x, y, size, angle) in
     short-side units, the image's (w, h) in short-side units)."""
-    if r.get("recipe_version", "").split(";")[0] not in {f"image-simprints/{n}" for n in RECIPES}:
-        raise ValueError(f"codes are from an unknown recipe: {r.get('recipe_version')!r}")
+    recipe_of(r.get("recipe_version", ""))
     w, h = r["prepared_size"]
     short = min(w, h)
     c = [x for x in r["codes"] if not x.get("stop")]  # see mark_stop_codes
@@ -294,11 +295,11 @@ def hamming(q: np.ndarray, r: np.ndarray) -> np.ndarray:
 def match(verifier_codes: dict, candidate_codes: dict, settings: dict | None = None) -> dict:
     """How the verifier's image relates to the candidate's, from their codes."""
     cq, gq, size_q = parse(verifier_codes)
-    recipes = {r["recipe_version"].split(";")[0].rsplit("/", 1)[1] for r in (verifier_codes, candidate_codes)}
-    recipes |= {str(settings["recipe"])} if settings and "recipe" in settings else set()
+    recipes = {recipe_of(r["recipe_version"]) for r in (verifier_codes, candidate_codes)}
+    recipes |= {settings["recipe"]} if settings and "recipe" in settings else set()
     if len(recipes) > 1:
         raise ValueError(f"cannot match codes of different recipes: {sorted(recipes)}")
-    s = settings_of({"recipe": int(recipes.pop())} | (settings or {}))
+    s = settings_of({"recipe": recipes.pop()} | (settings or {}))
     cr, gr, size_r = parse(candidate_codes)
     qi, rj = np.nonzero(hamming(cq, cr) <= s["tolerance_t"])
     best, members = votes(qi, rj, np.zeros(len(cr), int), gq, gr, 1)

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from PIL import Image, ImageCms
+from PIL import Image
 
 import image_simprints as s
 from image_simprints import recipe as R
@@ -42,7 +42,7 @@ def test_threads_agree_with_serial():
 
 
 @pytest.mark.parametrize("recipe", [1, 2])
-@pytest.mark.parametrize("name", ["shapes.png", "portrait.png", "small.png"])
+@pytest.mark.parametrize("name", ["shapes.png", "portrait.png", "small.png", "profile.png"])
 def test_vectors(name, recipe):
     vectors = "expected.json" if recipe == 1 else f"expected_v{recipe}.json"
     want = json.loads((V / vectors).read_text(encoding="utf-8"))[name]
@@ -110,13 +110,14 @@ def test_16_bit_grey_keeps_high_byte():
     assert (out[..., 0] == a >> 8).all()
 
 
-def test_cmyk_and_srgb_profile():
+def test_cmyk_and_profile_ignored():
     img = Image.fromarray(rgb())
     buf = io.BytesIO()
     img.convert("CMYK").save(buf, "JPEG", quality=95)
     assert np.abs(R.decode(buf.getvalue()).astype(int) - rgb()).mean() < 8
-    icc = ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB")).tobytes()
-    assert np.abs(R.decode(png(img, icc_profile=icc)).astype(int) - rgb()).max() <= 2
+    with Image.open(V / "profile.png") as v:
+        icc = v.info["icc_profile"]
+    assert (R.decode(png(img, icc_profile=icc)) == rgb()).all()
 
 
 def test_animated_uses_first_frame():

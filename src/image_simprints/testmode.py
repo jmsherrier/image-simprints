@@ -238,7 +238,7 @@ def positives(results, cc, vc, vs, over=None) -> tuple[dict, float]:
 
 def false_matches(pool, cc, vc, vs, over=None) -> tuple[int, int, list]:
     """Every image's verifier codes against every other's creator codes, at once."""
-    recipe = int(pool[0]["codes"]["original"]["creator"]["recipe_version"].split(";")[0].rsplit("/", 1)[1])
+    recipe = R.recipe_of(pool[0]["codes"]["original"]["creator"]["recipe_version"])
     s = R.settings_of({"recipe": recipe} | (over or {}))
     refs = [R.parse(first(p["codes"]["original"]["creator"], cc)) for p in pool]
     rc = np.concatenate([r[0] for r in refs])
@@ -348,7 +348,7 @@ def score(args, over, out, results, plain, looks, pool, timed, n_orig, n_unrel, 
         t = R.settings_of({"recipe": args.recipe} | over)["tolerance_t"]
         results, plain, looks = skip_hubs(results, plain, looks, hubs, t)
     report = {
-        "recipe": f"image-simprints/{args.recipe}", "date": date.today().isoformat(),
+        "recipe": f"image-simprints/{R.RECIPES[args.recipe]['version']}", "date": date.today().isoformat(),
         "environment": {"platform": platform.platform(), "python": platform.python_version(),
                         "opencv": cv2.__version__, "numpy": np.__version__, "pillow": Image.__version__},
         "inputs": {"originals": n_orig, "unrelated": n_unrel, "modified": bool(args.modified),

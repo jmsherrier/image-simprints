@@ -1,6 +1,6 @@
 {
  "shapes.png": {
-  "recipe_version": "image-simprints/1",
+  "recipe_version": "image-simprints/1.1",
   "prepared_size": [
    512,
    384
@@ -170,7 +170,7 @@
   "reason": null
  },
  "portrait.png": {
-  "recipe_version": "image-simprints/1",
+  "recipe_version": "image-simprints/1.1",
   "prepared_size": [
    341,
    512
@@ -340,12 +340,182 @@
   "reason": null
  },
  "small.png": {
-  "recipe_version": "image-simprints/1",
+  "recipe_version": "image-simprints/1.1",
   "prepared_size": [
    24,
    24
   ],
   "codes": [],
   "reason": "too small: prepared image is 24x24, needs 32 px on each side"
+ },
+ "profile.png": {
+  "recipe_version": "image-simprints/1.1",
+  "prepared_size": [
+   341,
+   512
+  ],
+  "codes": [
+   {
+    "chunk_idx": 0,
+    "code": "55cd239825262be272a4d3d7f25b768f340db7b12411eb46bc8531a7f0e54cdc",
+    "x": 0.684841,
+    "y": 0.864998,
+    "scale": 0.106013,
+    "angle": 87.277
+   },
+   {
+    "chunk_idx": 1,
+    "code": "228dd35e7d2c200a96aeca9d316e47bc1965b4837c7130c6fec9c92cc1830c5e",
+    "x": 0.890224,
+    "y": 0.683517,
+    "scale": 0.027233,
+    "angle": 90.837
+   },
+   {
+    "chunk_idx": 2,
+    "code": "2201995efd142808c2afc29d39ff47bd1965fc836d5130ce3ef9e920c1b38c5e",
+    "x": 0.890224,
+    "y": 0.683517,
+    "scale": 0.027233,
+    "angle": 269.353
+   },
+   {
+    "chunk_idx": 3,
+    "code": "9bdf07e318a5a9e550d29ee4788ae3ea6cf584d373d181da7f8159d10f57c8c4",
+    "x": 0.626721,
+    "y": 0.834247,
+    "scale": 0.020647,
+    "angle": 12.056
+   },
+   {
+    "chunk_idx": 4,
+    "code": "9bdf0be318a5a9e750f29ee4788ae7ea68f5849173d181da7fa159510f5748c4",
+    "x": 0.628951,
+    "y": 0.835226,
+    "scale": 0.02325,
+    "angle": 16.867
+   },
+   {
+    "chunk_idx": 5,
+    "code": "3bc7004b54a7f257b404d2be786bd7fb7bf5109a575da1e63d1849794045cc14",
+    "x": 0.570504,
+    "y": 0.672252,
+    "scale": 0.06392,
+    "angle": 198.761
+   },
+   {
+    "chunk_idx": 6,
+    "code": "1bd70d6a18a3bbe154729c64789ae7e3eeb5d8c313b9c9c87d2533f19d416865",
+    "x": 0.599035,
+    "y": 0.844655,
+    "scale": 0.022916,
+    "angle": 17.241
+   },
+   {
+    "chunk_idx": 7,
+    "code": "148ba80e858bd37da10f80026735bd31caf29b60065ef004381e5d89386dd102",
+    "x": 0.360976,
+    "y": 0.790429,
+    "scale": 0.128143,
+    "angle": 255.79
+   },
+   {
+    "chunk_idx": 8,
+    "code": "148fa9ee8589f35da007020a4735b533cbf09d60065ef10c101e9c899878f90a",
+    "x": 0.382434,
+    "y": 0.791792,
+    "scale": 0.138904,
+    "angle": 249.072
+   },
+   {
+    "chunk_idx": 9,
+    "code": "74cb0b57d7ccf75d750fc8ca4f8c9d51a47016e0c71e35069106d8a9b8a8e38a",
+    "x": 0.608978,
+    "y": 0.23371,
+    "scale": 0.144407,
+    "angle": 19.353
+   },
+   {
+    "chunk_idx": 10,
+    "code": "b6cf3942d5fbf741b70e40f2dfe4bd792d58112887dcb527199e2cae62c5b3b2",
+    "x": 0.608978,
+    "y": 0.23371,
+    "scale": 0.144407,
+    "angle": 173.128
+   },
+   {
+    "chunk_idx": 11,
+    "code": "0233c22bad72f25f1e6d0adf1cf68f70a1f69872241fdb26f88ee05f84003821",
+    "x": 0.659153,
+    "y": 0.36168,
+    "scale": 0.047903,
+    "angle": 3.955
+   },
+   {
+    "chunk_idx": 12,
+    "code": "bb912e1a1827e3281236f261708843de5c0bc9a95480a1c23f7d59b441cfbc22",
+    "x": 0.074136,
+    "y": 0.476551,
+    "scale": 0.047334,
+    "angle": 355.937
+   },
+   {
+    "chunk_idx": 13,
+    "code": "9b93fb49504dabe3d1d090c74c8a0343c6f5cca5633941ca6fd1757c9ae5d332",
+    "x": 0.833983,
+    "y": 0.803483,
+    "scale": 0.055672,
+    "angle": 88.838
+   },
+   {
+    "chunk_idx": 14,
+    "code": "64ca2816ddf6a0be7409dda4466499159ca64cff34c9b50cf884583fc3036c96",
+    "x": 0.890634,
+    "y": 0.229877,
+    "scale": 0.035107,
+    "angle": 89.017
+   },
+   {
+    "chunk_idx": 15,
+    "code": "63e3c237a8e3a2d43c0928f67dfdbd58b984393e25149f26b85e64370348ae34",
+    "x": 0.858897,
+    "y": 0.204001,
+    "scale": 0.032257,
+    "angle": 79.21
+   },
+   {
+    "chunk_idx": 16,
+    "code": "f9d5789e7424201011aad71a684c181f5d09eebf3045239384007917f32d361e",
+    "x": 0.111254,
+    "y": 0.127321,
+    "scale": 0.034403,
+    "angle": 87.446
+   },
+   {
+    "chunk_idx": 17,
+    "code": "4dff465a7b41e3017e11fba7f48f93cba753ca3888111e4ee64da720105b4905",
+    "x": 0.852497,
+    "y": 0.614091,
+    "scale": 0.081376,
+    "angle": 289.704
+   },
+   {
+    "chunk_idx": 18,
+    "code": "62b80b5fee43b57a676a689705fc0950f12eec6e2d5d9547f08ee22a14808ebd",
+    "x": 0.608542,
+    "y": 0.613082,
+    "scale": 0.03133,
+    "angle": 282.08
+   },
+   {
+    "chunk_idx": 19,
+    "code": "6ffbf357e272e3d01f53e8a6c7bc9850277c6a6529711720a503c7283481972c",
+    "x": 0.470522,
+    "y": 0.643006,
+    "scale": 0.039229,
+    "angle": 95.522
+   }
+  ],
+  "reason": null
  }
 }

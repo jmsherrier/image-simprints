@@ -1,4 +1,4 @@
-# Recipe `image-simprints/2`
+# Recipe `image-simprints/2.1`
 
 This document specifies how to turn an image into codes and how to compare two
 sets of codes. It is meant to be enough to reimplement the recipe. The reference
@@ -11,6 +11,8 @@ span check of 0.05.
 Recipe 2 is the default. It differs from recipe 1 (the research's) in one step:
 each descriptor is computed at its keypoint's own octave (§5.1), with thresholds
 refitted for that (§5). Recipe 1 stays available with the setting `recipe: 1`.
+Version 2.1 (and 1.1) ignores embedded colour profiles (§2), so that a browser
+can decode the same pixels.
 
 Every operation is one OpenCV.js also has (SIFT needs a custom OpenCV.js build),
 or is plain arithmetic.
@@ -27,9 +29,10 @@ or is plain arithmetic.
 | `min_votes` | 2 | match: agreeing codes needed on one transform |
 | `span_check` | 0.05 | match: minimum spread of the agreeing verifier keypoints |
 
-The version string is `image-simprints/<recipe>`. Each other setting that
-differs from its default is appended as `;name=value`, in the order of the table
-above (for example `image-simprints/2;prepared_size=1024`). `match` refuses
+The version string is `image-simprints/2.1` for recipe 2 and
+`image-simprints/1.1` for recipe 1. Each other setting that differs from its
+default is appended as `;name=value`, in the order of the table above (for
+example `image-simprints/2.1;prepared_size=1024`). `match` refuses
 codes of an unknown recipe, and never compares codes of two different recipes.
 
 Fixed constants (not settings): `MIN_SIDE = 32`, `CANDIDATES = 512`,
@@ -40,7 +43,11 @@ Fixed constants (not settings): `MIN_SIDE = 32`, `CANDIDATES = 512`,
 ## 2. Decoding
 
 The source is a file path, encoded bytes, or a decoded frame. The output is an
-RGB uint8 image in sRGB.
+RGB uint8 image. **Colour profiles are ignored**: an embedded ICC profile, or any
+other colour-space tag (PNG `gAMA`, `cHRM`, `sRGB`; the primaries and transfer
+of CICP), is not applied, and the decoded values are taken as sRGB. In a
+browser: `createImageBitmap(blob, {colorSpaceConversion: "none",
+imageOrientation: "from-image", premultiplyAlpha: "none"})`, drawn to a canvas.
 
 - **Decoded frame** (for video): uint8, shaped `(h, w)` grey, `(h, w, 3)` RGB or
   `(h, w, 4)` RGBA. The channel order is RGB; convert OpenCV's BGR frames first.
@@ -54,13 +61,9 @@ RGB uint8 image in sRGB.
      high byte (`v >> 8`).
   4. **Transparency** (an alpha channel, or a transparent palette entry or
      colour): convert to RGBA and keep the alpha. Convert the colour to RGB.
-  5. Any mode other than RGB, L or CMYK is converted to RGB.
-  6. **Colour profile**: if the image carries an ICC profile, convert it to sRGB
-     with littleCMS (Pillow `ImageCms.profileToProfile`, perceptual intent,
-     output RGB). This covers CMYK with a profile. If the profile cannot be read
-     or does not fit the mode, the pixels are taken as sRGB.
-  7. Convert to RGB. CMYK without a profile uses Pillow's plain conversion.
-  8. **Flatten** the alpha onto white, per channel, in integers:
+  5. Convert to RGB (Pillow `convert("RGB")`). CMYK, profile or not:
+     `R = ((255 - C) * (255 - K) + 127) // 255`, and so on for G (M) and B (Y).
+  6. **Flatten** the alpha onto white, per channel, in integers:
      `out = (c * a + 255 * (255 - a) + 127) // 255`.
 
 ## 3. Preparation
@@ -215,13 +218,16 @@ output, for every code, is in
 default settings) and [`tests/vectors/expected.json`](tests/vectors/expected.json)
 (recipe 1). The images are synthetic and seeded
 ([`tests/make_vectors.py`](tests/make_vectors.py)). Both recipes select the same
-keypoints; only the codes differ.
+keypoints; only the codes differ. `profile.png` is `portrait.png` with an
+embedded profile (linear sRGB) that would brighten it a lot if applied; its
+codes must equal `portrait.png`'s.
 
 | image | SHA-256 (first 16) | prepared | codes | first keypoint |
 | --- | --- | --- | --- | --- |
 | shapes.png (640×480) | 902012a8c25b8141 | 512×384 | 20 | x 0.753158, y 0.360695, scale 0.065891, angle 100.702 |
 | portrait.png (480×720) | 5d4418a54c8dc9ce | 341×512 | 20 | x 0.684841, y 0.864998, scale 0.106013, angle 87.277 |
 | small.png (24×24) | d256eeb4f84d86be | 24×24 | 0 | reason `too small` |
+| profile.png (480×720) | 0befb18822bf6488 | 341×512 | 20 | as portrait.png |
 
 | image | first code, recipe 2 | first code, recipe 1 |
 | --- | --- | --- |
@@ -262,7 +268,18 @@ codes.
 - **Projection** is computed exactly, where the research used a float32 matrix
   product. The two agreed on every code checked.
 - **Decoding** adds what the research did not need: alpha flattening (the
-  research dropped alpha), ICC to sRGB, 16-bit grey, and the minimum size.
+  research dropped alpha), 16-bit grey, and the minimum size.
+- **Colour profiles** (version 2.1): versions 1 and 2 converted an embedded ICC
+  profile to sRGB with littleCMS. A browser converts with its own colour
+  engine, which moved 7% of the keypoints of the 150 test originals (all in
+  originals carrying a profile).
+  Version 2.1 ignores profiles, which a browser does exactly
+  (`colorSpaceConversion: "none"`). On the 150 test originals, with the copies
+  made from the converted pixels (the case that favours converting), ignoring
+  finds 67.8% against 68.0%. Converting with littleCMS compiled to WebAssembly
+  closed the browser gap as well, at the cost of a WebAssembly module and an
+  ICC parser for each file format. Details:
+  [image-simprints-js](https://github.com/jmsherrier/image-simprints-js).
 - **Matching** is the research's follow-up matcher (`followup.match`,
   `geometry`, `codematch.classify`) for one pair, with its footprint check
   reduced to the span check that was chosen (`spread ≥ 0.05`; the other
