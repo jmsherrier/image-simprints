@@ -428,7 +428,7 @@ def markdown(rep: dict) -> str:
 
 # --- fetch-corpus --------------------------------------------------------------------------
 
-USER_AGENT = "image-simprints/0.1 (https://github.com/jmsherrier/image-simprints)"
+USER_AGENT = "image-simprints/0.2 (https://github.com/jmsherrier/image-simprints)"
 
 
 def fetch_corpus(manifest: Path, to: Path) -> int:

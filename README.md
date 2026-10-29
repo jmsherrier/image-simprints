@@ -24,7 +24,7 @@ filling half a collage; 67.9% of all modified copies, with no false match
 between truly unrelated photos ([report](tests/corpus/report-v2.1/summary.md)).
 
 ```sh
-pip install git+https://github.com/jmsherrier/image-simprints@v0.1.0   # Python 3.12
+pip install git+https://github.com/jmsherrier/image-simprints@v0.2.0   # Python 3.12
 pip install .            # from a checkout; numpy, opencv-python-headless, pillow (pinned)
 ```
 
