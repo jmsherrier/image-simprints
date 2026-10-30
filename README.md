@@ -111,6 +111,8 @@ experiments).
   codes, an index-side option, guard against images that match too many others.
 - [image-simprints-js](https://github.com/jmsherrier/image-simprints-js): the
   recipe in the browser, on a custom OpenCV.js build.
+- [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md): dependencies and their
+  licences.
 
 ## Tests
 
