@@ -34,6 +34,14 @@ def shapes(w, h, seed) -> np.ndarray:
     return np.clip(img + rng.normal(0, 4, img.shape), 0, 255).astype(np.uint8)
 
 
+def crowded(w, h, seed) -> np.ndarray:
+    """Shapes under heavy pixel grain: the strongest 512 keypoints are nearly all below
+    the size floor (version 2.1 kept 2 codes of this image, 2.2 keeps 20)."""
+    rng = np.random.default_rng(seed + 100)
+    grain = (rng.random((h, w, 1)) < 0.5) * 180 - 90
+    return np.clip(shapes(w, h, seed).astype(np.int16) + grain, 0, 255).astype(np.uint8)
+
+
 def linear_profile() -> bytes:
     """A minimal ICC v2 RGB profile: sRGB primaries with linear curves (gamma 1). Applied,
     it would brighten the image a lot; the recipe ignores it."""
@@ -55,7 +63,8 @@ def main(recipe: int) -> None:
     from the same images."""
     HERE.mkdir(exist_ok=True)
     images = {"shapes.png": shapes(640, 480, 1), "portrait.png": shapes(480, 720, 2),
-              "small.png": shapes(24, 24, 3), "profile.png": shapes(480, 720, 2)}  # fmt: skip
+              "small.png": shapes(24, 24, 3), "profile.png": shapes(480, 720, 2),
+              "crowded.png": crowded(640, 480, 4)}  # fmt: skip
     expected = {}
     for name, rgb in images.items():
         if recipe == 1 and name == "profile.png":  # portrait.png with an embedded profile: the same codes

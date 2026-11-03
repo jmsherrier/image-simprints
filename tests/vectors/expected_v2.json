@@ -1,6 +1,6 @@
 {
  "shapes.png": {
-  "recipe_version": "image-simprints/2.1",
+  "recipe_version": "image-simprints/2.2",
   "prepared_size": [
    512,
    384
@@ -170,7 +170,7 @@
   "reason": null
  },
  "portrait.png": {
-  "recipe_version": "image-simprints/2.1",
+  "recipe_version": "image-simprints/2.2",
   "prepared_size": [
    341,
    512
@@ -340,7 +340,7 @@
   "reason": null
  },
  "small.png": {
-  "recipe_version": "image-simprints/2.1",
+  "recipe_version": "image-simprints/2.2",
   "prepared_size": [
    24,
    24
@@ -349,7 +349,7 @@
   "reason": "too small: prepared image is 24x24, needs 32 px on each side"
  },
  "profile.png": {
-  "recipe_version": "image-simprints/2.1",
+  "recipe_version": "image-simprints/2.2",
   "prepared_size": [
    341,
    512
@@ -514,6 +514,176 @@
     "y": 0.643006,
     "scale": 0.039229,
     "angle": 95.522
+   }
+  ],
+  "reason": null
+ },
+ "crowded.png": {
+  "recipe_version": "image-simprints/2.2",
+  "prepared_size": [
+   512,
+   384
+  ],
+  "codes": [
+   {
+    "chunk_idx": 0,
+    "code": "d4db1b989ce3e36763c138c74586d166f685c6ac6319e56abd8c1ebd806df7b2",
+    "x": 0.664681,
+    "y": 0.292767,
+    "scale": 0.023255,
+    "angle": 276.471
+   },
+   {
+    "chunk_idx": 1,
+    "code": "d0ad7b5e9e4bd30fa5cb00db35a50d68b600b72cc6d9f56a50dfa0ec18c4fbac",
+    "x": 0.664681,
+    "y": 0.292767,
+    "scale": 0.023255,
+    "angle": 333.956
+   },
+   {
+    "chunk_idx": 2,
+    "code": "56836a62adebf72fa6694ae9b5b7e7e5a4ae90ea269bfc00d9ec2afd0460f8e1",
+    "x": 0.353741,
+    "y": 0.571899,
+    "scale": 0.032516,
+    "angle": 352.253
+   },
+   {
+    "chunk_idx": 3,
+    "code": "948939ded39c1b1aa1af47194060151f1c42240bc44b2295123eb82ee2ad641a",
+    "x": 0.978273,
+    "y": 0.838201,
+    "scale": 0.028265,
+    "angle": 80.557
+   },
+   {
+    "chunk_idx": 4,
+    "code": "0328e726ddbc54d4db2ecafb59bc53bcb9f4a1c2316a365c1fd3d850051f9ad6",
+    "x": 0.978273,
+    "y": 0.838201,
+    "scale": 0.028265,
+    "angle": 263.854
+   },
+   {
+    "chunk_idx": 5,
+    "code": "93e62bd669c9b75d243102db2a3e9b52bbf2501d6d5d07667d16b10f18dc3f45",
+    "x": 0.210423,
+    "y": 0.338488,
+    "scale": 0.089522,
+    "angle": 173.201
+   },
+   {
+    "chunk_idx": 6,
+    "code": "6332c177ee51a5681f4b88ce07958830a37ed97228f6de2ff84bc65c1520a2a1",
+    "x": 0.575692,
+    "y": 0.159269,
+    "scale": 0.047919,
+    "angle": 95.035
+   },
+   {
+    "chunk_idx": 7,
+    "code": "9c4287b76496423d17b5e51f9eeff9963771738f7a6728e7870a954be42a9552",
+    "x": 0.661375,
+    "y": 0.551359,
+    "scale": 0.047361,
+    "angle": 126.256
+   },
+   {
+    "chunk_idx": 8,
+    "code": "6f53c773aae143714ac6bae71d9eb8f2adbfc07205308e5fbf025750363daa61",
+    "x": 0.060358,
+    "y": 0.671607,
+    "scale": 0.034471,
+    "angle": 100.224
+   },
+   {
+    "chunk_idx": 9,
+    "code": "9aa21f5a1863e32f375136736c86634fb6ab84896519f18a4dfd6fe44044fee6",
+    "x": 0.060358,
+    "y": 0.671607,
+    "scale": 0.034471,
+    "angle": 172.679
+   },
+   {
+    "chunk_idx": 10,
+    "code": "4372c773a8e022701a6aaa671d9eb8f0a9f7c17205708e1fbb0247512704aee1",
+    "x": 0.065939,
+    "y": 0.667157,
+    "scale": 0.043984,
+    "angle": 95.664
+   },
+   {
+    "chunk_idx": 11,
+    "code": "18a20b5a1843a32f3451b6f36c876f4fa6abc0896c19e18a6f2d6fe44447fee6",
+    "x": 0.065939,
+    "y": 0.667157,
+    "scale": 0.043984,
+    "angle": 170.528
+   },
+   {
+    "chunk_idx": 12,
+    "code": "638f7943e6a1f6c62c4ecab34b641030904615b2469f3325f066683f708029a8",
+    "x": 0.20825,
+    "y": 0.391993,
+    "scale": 0.056214,
+    "angle": 30.467
+   },
+   {
+    "chunk_idx": 13,
+    "code": "4e42426268f3f75d3452d8e79efedb72ebf101f047f7fd24fd2240b920508ea1",
+    "x": 0.179421,
+    "y": 0.302757,
+    "scale": 0.046687,
+    "angle": 154.148
+   },
+   {
+    "chunk_idx": 14,
+    "code": "94ad38881b4ddb2fe4d19691e7805bcb96aa16ace64ce7337c8e79afd8ceb13b",
+    "x": 0.179421,
+    "y": 0.302757,
+    "scale": 0.046687,
+    "angle": 261.077
+   },
+   {
+    "chunk_idx": 15,
+    "code": "420d46c258b42c6d1a527b2dfe0aa2ef25316ad759e821c8ef850bf902574655",
+    "x": 0.265363,
+    "y": 0.367079,
+    "scale": 0.030925,
+    "angle": 21.495
+   },
+   {
+    "chunk_idx": 16,
+    "code": "c2bcb94cdf4bf756e7d5249586f01509ba44372e8f39716510c6a0aa98889f2c",
+    "x": 0.887011,
+    "y": 0.55583,
+    "scale": 0.022617,
+    "angle": 322.803
+   },
+   {
+    "chunk_idx": 17,
+    "code": "270aa27263dc1878182ef38d3a2aa2fd0934d85670ee8b5e562ac65ba3172647",
+    "x": 0.698568,
+    "y": 0.245263,
+    "scale": 0.07568,
+    "angle": 106.976
+   },
+   {
+    "chunk_idx": 18,
+    "code": "24660a3b58d728e8fa94df647ba9bbc9413748c8bfe5a55f7d8d4c594b52a8a7",
+    "x": 0.698568,
+    "y": 0.245263,
+    "scale": 0.07568,
+    "angle": 147.656
+   },
+   {
+    "chunk_idx": 19,
+    "code": "46ea8356aa49e2083e07a2c145a63952a7e541292539376efd1e6709720ebfa2",
+    "x": 0.169823,
+    "y": 0.611415,
+    "scale": 0.144551,
+    "angle": 98.429
    }
   ],
   "reason": null

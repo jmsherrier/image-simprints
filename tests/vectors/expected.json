@@ -517,5 +517,31 @@
    }
   ],
   "reason": null
+ },
+ "crowded.png": {
+  "recipe_version": "image-simprints/1.1",
+  "prepared_size": [
+   512,
+   384
+  ],
+  "codes": [
+   {
+    "chunk_idx": 0,
+    "code": "74cb0bdb94c3f255271d28eb4fa59947f750063ca61db526bd0e5cb9824cf732",
+    "x": 0.664681,
+    "y": 0.292767,
+    "scale": 0.023255,
+    "angle": 276.471
+   },
+   {
+    "chunk_idx": 1,
+    "code": "74cf2b5bd54bf74fa60708f347f5bd4d97d8172c861df527b81eaca818c4f3b8",
+    "x": 0.664681,
+    "y": 0.292767,
+    "scale": 0.023255,
+    "angle": 333.956
+   }
+  ],
+  "reason": null
  }
 }

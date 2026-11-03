@@ -1,4 +1,4 @@
-# Recipe `image-simprints/2.1`
+# Recipe `image-simprints/2.2`
 
 This document specifies how to turn an image into codes and how to compare two
 sets of codes. It is meant to be enough to reimplement the recipe. The reference
@@ -12,7 +12,9 @@ Recipe 2 is the default. It differs from recipe 1 (the research's) in one step:
 each descriptor is computed at its keypoint's own octave (§5.1), with thresholds
 refitted for that (§5). Recipe 1 stays available with the setting `recipe: 1`.
 Version 2.1 (and 1.1) ignores embedded colour profiles (§2), so that a browser
-can decode the same pixels.
+can decode the same pixels. Version 2.2 applies the size floor before the
+candidates cap (§4), so an image crowded with fine detail keeps its large
+keypoints.
 
 Every operation is one OpenCV.js also has (SIFT needs a custom OpenCV.js build),
 or is plain arithmetic.
@@ -29,10 +31,10 @@ or is plain arithmetic.
 | `min_votes` | 2 | match: agreeing codes needed on one transform |
 | `span_check` | 0.05 | match: minimum spread of the agreeing verifier keypoints |
 
-The version string is `image-simprints/2.1` for recipe 2 and
+The version string is `image-simprints/2.2` for recipe 2 and
 `image-simprints/1.1` for recipe 1. Each other setting that differs from its
 default is appended as `;name=value`, in the order of the table above (for
-example `image-simprints/2.1;prepared_size=1024`). `match` refuses
+example `image-simprints/2.2;prepared_size=1024`). `match` refuses
 codes of an unknown recipe, and never compares codes of two different recipes.
 
 Fixed constants (not settings): `MIN_SIDE = 32`, `CANDIDATES = 512`,
@@ -87,10 +89,12 @@ imageOrientation: "from-image", premultiplyAlpha: "none"})`, drawn to a canvas.
    `(x, y, size, angle, response)`. Two keypoints at one point with different
    angles are two rows.
 2. **Rank**: sort by response, highest first. Break ties by `y` ascending, then
-   `x` ascending. Keep the first `CANDIDATES` (512).
-3. **Detail floor**: drop keypoints whose patch detail is below 200 (see below).
-4. **Size floor**: drop keypoints with `size < 0.02 * min(w, h)`.
-5. **Select**: keep the first N, where N is `creator_codes` or `verifier_codes`
+   `x` ascending.
+3. **Size floor**: drop keypoints with `size < 0.02 * min(w, h)`. Recipe 1
+   applies this after step 4 instead.
+4. **Cap**: keep the first `CANDIDATES` (512).
+5. **Detail floor**: drop keypoints whose patch detail is below 200 (see below).
+6. **Select**: keep the first N, where N is `creator_codes` or `verifier_codes`
    by role. Creator codes are therefore always a prefix of the verifier codes of
    the same image at the same `prepared_size`. If none remain, return no codes
    with the reason `no keypoints with enough detail`.
@@ -218,9 +222,11 @@ output, for every code, is in
 default settings) and [`tests/vectors/expected.json`](tests/vectors/expected.json)
 (recipe 1). The images are synthetic and seeded
 ([`tests/make_vectors.py`](tests/make_vectors.py)). Both recipes select the same
-keypoints; only the codes differ. `profile.png` is `portrait.png` with an
+keypoints, except `crowded.png`; otherwise only the codes differ. `profile.png` is `portrait.png` with an
 embedded profile (linear sRGB) that would brighten it a lot if applied; its
-codes must equal `portrait.png`'s.
+codes must equal `portrait.png`'s. `crowded.png` is shapes under heavy pixel
+grain, so nearly all of its strongest 512 keypoints are below the size floor:
+recipe 2 (floor first) keeps 20 codes, recipe 1 keeps 2.
 
 | image | SHA-256 (first 16) | prepared | codes | first keypoint |
 | --- | --- | --- | --- | --- |
@@ -228,11 +234,13 @@ codes must equal `portrait.png`'s.
 | portrait.png (480×720) | 5d4418a54c8dc9ce | 341×512 | 20 | x 0.684841, y 0.864998, scale 0.106013, angle 87.277 |
 | small.png (24×24) | d256eeb4f84d86be | 24×24 | 0 | reason `too small` |
 | profile.png (480×720) | 0befb18822bf6488 | 341×512 | 20 | as portrait.png |
+| crowded.png (640×480) | ff14c42f525d67e8 | 512×384 | 20 (recipe 1: 2) | x 0.664681, y 0.292767, scale 0.023255, angle 276.471 |
 
 | image | first code, recipe 2 | first code, recipe 1 |
 | --- | --- | --- |
 | shapes.png | `2bcb4b7b9865c349220b08eb45a5a5f7e5d608a02719b55efd6d44b56224ebb0` | `52cb6b5fbb6fc205600b09eb0524896584d204646719b51cf90848bd1224aa80` |
 | portrait.png | `d5c5038d2b060ae650a6d7053a4bf68a9009e0b1e40960d8fa043d25afa5650d` | `55cd239825262be272a4d3d7f25b768f340db7b12411eb46bc8531a7f0e54cdc` |
+| crowded.png | `d4db1b989ce3e36763c138c74586d166f685c6ac6319e56abd8c1ebd806df7b2` | `74cb0bdb94c3f255271d28eb4fa59947f750063ca61db526bd0e5cb9824cf732` |
 
 These vectors were produced with OpenCV 5.0.0 (opencv-python-headless
 5.0.0.93), NumPy 2.5.1 and Pillow 12.3.0. With those pins the codes are
@@ -251,16 +259,31 @@ codes.
   with recipe 1, a verifier at 1024 px finds 47.1% of modified copies, against
   63.3% at 512 px. Recipe 2 describes each keypoint at its own octave. On the
   test split (150 originals, 1,000 unrelated photos) at default settings
-  version 2.1 finds 67.9%, and 61.8% with the verifier at 1024 px (version 2:
-  68.0% and 62.0%). Neither recipe has a
-  false match between truly unrelated photos at default settings. Every false
-  match was checked by eye; the others are duplicates, the same picture, or the
-  same scene. `T` and `tolerance_t` were fitted on the tuning split only; the
+  version 2.2 finds 68.9%, and 68.4% with the verifier at 1024 px (version 2.1:
+  67.9% and 61.8%; version 2: 68.0% and 62.0%). Version 2.2 has one false match
+  between truly unrelated photos at default settings, a repeated pattern (see
+  below); versions 2 and 2.1 and recipe 1 have none. Every false match was
+  checked by eye; the others are duplicates, the same picture, or the same
+  scene. `T` and `tolerance_t` were fitted on the tuning split only; the
   fit chose `tolerance_t = 24` for recipe 2. Reports:
+  [recipe 2.2](tests/corpus/report-v2.2/summary.md),
   [recipe 2.1](tests/corpus/report-v2.1/summary.md),
   [recipe 2](tests/corpus/report-v2-fit/tolerance_t24/summary.md),
   [recipe 1](tests/corpus/report/summary.md).
 
+- **Size floor first** (version 2.2): versions 2 and 2.1 kept the 512
+  strongest keypoints before the size floor. In an image crowded with fine
+  detail (foliage, carving, small text) nearly all of those are below the
+  floor, so few codes remain: 111 of the 2,618 corpus photos have fewer than 10
+  large keypoints among their strongest 512. Version 2.2 applies the size floor
+  first. On the test split it finds 68.9% against 67.9% (50% crops: 82% against
+  77%; at 1024 px: 68.4% against 61.8%); the 8 test originals with fewer than
+  10 large keypoints go from 25% to 31%. It adds one false match between truly
+  unrelated photos at default settings: a stone wall against an arabesque
+  graphic, a repeated pattern that the stop codes in
+  [INTEGRATION.md](INTEGRATION.md) remove. Raising `candidates` on the verifier
+  alone was the alternative; it helps only when the checked image is the
+  crowded one, not the stored one.
 - **Preparation**: the research converted to grey with Pillow
   (`convert("L")`) and resized with Pillow's `LANCZOS`. Neither is in OpenCV,
   so this recipe uses OpenCV's grey conversion and `INTER_AREA`. Given the same

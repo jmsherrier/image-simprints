@@ -42,7 +42,7 @@ def test_threads_agree_with_serial():
 
 
 @pytest.mark.parametrize("recipe", [1, 2])
-@pytest.mark.parametrize("name", ["shapes.png", "portrait.png", "small.png", "profile.png"])
+@pytest.mark.parametrize("name", ["shapes.png", "portrait.png", "small.png", "profile.png", "crowded.png"])
 def test_vectors(name, recipe):
     vectors = "expected.json" if recipe == 1 else f"expected_v{recipe}.json"
     want = json.loads((V / vectors).read_text(encoding="utf-8"))[name]

@@ -16,7 +16,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageOps
 
-RECIPE = "image-simprints/2.1"
+RECIPE = "image-simprints/2.2"
 DEFAULTS = {
     "recipe": 2,  # 2: descriptors at each keypoint's octave; 1: at octave 0, as the research
     "creator_codes": 20,  # codes a creator stores (top-K)
@@ -26,7 +26,7 @@ DEFAULTS = {
     "prepared_size": 512,  # longer side of the prepared image, never upscaled
     "span_check": 0.05,  # spread of the agreeing verifier keypoints, see _judge
     "sift_features": 1500,  # SIFT keeps this many strongest keypoints (0: all)
-    "candidates": 512,  # strongest keypoints considered before the floors
+    "candidates": 512,  # strongest keypoints considered before the detail floor
 }
 MIN_SIDE = 32  # a prepared image shorter than this on either side gets no codes
 SIZE_FLOOR = 0.02  # keypoint diameter, as a share of the short side
@@ -36,12 +36,12 @@ SCALE_RANGE = (0.1, 10.0)  # plausible scale between two images of one picture
 CONTAINED = 0.95  # a footprint share at or above this counts as the whole image
 BACKGROUND = 255  # alpha is flattened onto white
 
-# Per recipe: its version (.1: colour profiles ignored), its defaults where they differ
+# Per recipe: its version (.1: colour profiles ignored; 2.2: size floor first), its defaults where they differ
 # from DEFAULTS, and its constants file.
 RECIPES = {
     1: {"version": "1.1", "defaults": {}, "constants": "projection.f32",
         "sha256": "3e1e7c2d35d72966a2cd3b6252b69c57eaad1379f9a9f4d74911f034c0853eed"},
-    2: {"version": "2.1", "defaults": {}, "constants": "projection_v2.f32",  # T and t fitted on tuning: scripts/fit_recipe_v2.py
+    2: {"version": "2.2", "defaults": {}, "constants": "projection_v2.f32",  # T and t fitted on tuning: scripts/fit_recipe_v2.py
         "sha256": "eb70f802f0ec95e1b177abc3da4438144af276a0b34c2deed0ecf09ff8f96921"},
 }  # fmt: skip
 
@@ -181,7 +181,7 @@ def generate(source, role: str, settings: dict | None = None) -> dict:
         out["reason"] = f"too small: prepared image is {w}x{h}, needs {MIN_SIDE} px on each side"
         return out
     k = s["creator_codes" if role == "creator" else "verifier_codes"]
-    rows, desc = select(g, k, s["sift_features"], s["candidates"], octave=s["recipe"] == 2)
+    rows, desc = select(g, k, s["sift_features"], s["candidates"], octave=s["recipe"] == 2, floor_first=s["recipe"] == 2)
     if not len(rows):
         out["reason"] = "no keypoints with enough detail"
         return out
@@ -193,17 +193,21 @@ def generate(source, role: str, settings: dict | None = None) -> dict:
     return out
 
 
-def select(g: np.ndarray, k: int, sift_features=1500, candidates=512, octave=False) -> tuple:
+def select(g: np.ndarray, k: int, sift_features=1500, candidates=512, octave=False, floor_first=False) -> tuple:
     """Up to k keypoints as rows (x, y, size, angle, response): the strongest, with
     enough patch detail and a diameter of at least SIZE_FLOOR of the short side.
     With octave (recipe 2), also their SIFT descriptors from the same call as the
-    detection, so each is computed at the octave the detector found it in."""
+    detection, so each is computed at the octave the detector found it in.
+    With floor_first (recipe 2), the size floor is applied before the candidates cap, so
+    an image crowded with fine detail keeps its large keypoints."""
     sift = cv2.SIFT_create(nfeatures=sift_features)
     kps, desc = sift.detectAndCompute(g, None) if octave else (sift.detect(g, None), None)
     rows = np.array([(p.pt[0], p.pt[1], p.size, p.angle, p.response) for p in kps], np.float64).reshape(-1, 5)
-    idx = np.lexsort((rows[:, 0], rows[:, 1], -rows[:, 4]))[:candidates]
+    big = rows[:, 2] >= SIZE_FLOOR * min(g.shape)
+    idx = np.lexsort((rows[:, 0], rows[:, 1], -rows[:, 4]))
+    idx = (idx[big[idx]] if floor_first else idx)[:candidates]
     idx = idx[_detail(g, rows[idx]) >= DETAIL_FLOOR]
-    idx = idx[rows[idx, 2] >= SIZE_FLOOR * min(g.shape)][:k]
+    idx = idx[big[idx]][:k]
     return rows[idx], (desc[idx] if octave and len(idx) else None)
 
 
