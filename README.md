@@ -26,7 +26,7 @@ filling half a collage; 68.9% of all modified copies
 unrelated photos is a repeated pattern; the [stop codes](INTEGRATION.md) remove it.
 
 ```sh
-pip install git+https://github.com/jmsherrier/image-simprints@v0.2.0   # Python 3.12
+pip install git+https://github.com/jmsherrier/image-simprints@v0.3.0   # Python 3.12
 pip install .            # from a checkout; numpy, opencv-python-headless, pillow (pinned)
 ```
 
