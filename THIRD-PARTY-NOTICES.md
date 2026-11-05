@@ -52,6 +52,10 @@ each one's Wikimedia Commons page, file URL, licence and SHA-256: 2,607 CC0 and
 11 under the Public Domain Mark. `fetch-corpus` downloads them from Wikimedia
 Commons.
 
+The figures in [`docs/demo/`](docs/demo/) are made from seven of them, all CC0:
+`s002`, `s015`, `s042`, `s067`, `s126`, `s131` and `u0330` (sources in the
+manifest).
+
 ## Patent
 
 SIFT's US patent ([US 6,711,293](https://patents.google.com/patent/US6711293B1/en)) expired in March 2020.
