@@ -107,6 +107,7 @@ experiments).
 
 ## Documents
 
+- [DEMO.md](DEMO.md): the matching process step by step, with figures.
 - [RECIPE.md](RECIPE.md): the recipe, precisely enough to reimplement, with
   test vectors.
 - [INTEGRATION.md](INTEGRATION.md): how to wire this into an app. Its stop
